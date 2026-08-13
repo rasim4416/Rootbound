@@ -24,6 +24,8 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if GameManager != null and GameManager.is_game_over():
 		return
+	if _is_placement_drag_active():
+		return
 	if grid == null or organel_layer == null:
 		return
 	if event is InputEventMouseButton:
@@ -162,3 +164,13 @@ func _get_resources() -> ResourceManager:
 	if GameManager == null:
 		return null
 	return GameManager.get_resource_manager()
+
+
+func _is_placement_drag_active() -> bool:
+	if get_tree() == null:
+		return false
+	for node: Node in get_tree().get_nodes_in_group("placement_drag_controller"):
+		var controller := node as PlacementDragController
+		if controller != null and controller.is_dragging():
+			return true
+	return false

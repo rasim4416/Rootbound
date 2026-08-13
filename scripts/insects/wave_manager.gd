@@ -33,7 +33,10 @@ signal state_changed(new_state: WaveState)
 
 const _DEFAULT_INSECT_SCENE: PackedScene = preload("res://scenes/insects/insect.tscn")
 
+signal auto_start_enabled_changed(enabled: bool)
+
 var state: WaveState = WaveState.IDLE
+var auto_start_enabled: bool = false
 
 var _level: LevelData = null
 var _generator: WaveGenerator = WaveGenerator.new()
@@ -46,6 +49,8 @@ var _wave_delay: float = 0.0
 var _active_insects: Dictionary = {}
 var _stopped_for_game_over: bool = false
 var _generation_token: int = 0
+var _inter_wave_delay: float = 0.0
+var _auto_start_token: int = 0
 
 
 func _ready() -> void:
@@ -75,6 +80,10 @@ func apply_level(level: LevelData) -> bool:
 
 	_level = level
 	_generator.configure(level)
+	if level.wave_scaling != null:
+		_inter_wave_delay = level.wave_scaling.delay_before_wave
+	else:
+		_inter_wave_delay = 0.0
 	grid_path = level.get_primary_path()
 	wave_data.clear()
 	_reset_for_new_run()
@@ -94,7 +103,22 @@ func apply_level(level: LevelData) -> bool:
 		return false
 
 	state_changed.emit(state)
+	if auto_start_enabled:
+		call_deferred("_try_auto_start")
 	return true
+
+
+func set_auto_start_enabled(enabled: bool) -> void:
+	if auto_start_enabled == enabled:
+		return
+	auto_start_enabled = enabled
+	auto_start_enabled_changed.emit(enabled)
+	if enabled:
+		_try_auto_start()
+
+
+func is_auto_start_enabled() -> bool:
+	return auto_start_enabled
 
 
 func _reset_for_new_run() -> void:
@@ -111,6 +135,7 @@ func _reset_for_new_run() -> void:
 func stop_all_waves() -> void:
 	_stopped_for_game_over = true
 	_generation_token += 1
+	_auto_start_token += 1
 	_spawns_remaining = 0
 	_spawn_queue.clear()
 	if state != WaveState.COMPLETED and state != WaveState.IDLE:
@@ -306,8 +331,36 @@ func _try_complete_wave(wave_number: int) -> void:
 	_spawn_queue.clear()
 	_set_state(WaveState.IDLE)
 	wave_completed.emit(wave_number)
+	if auto_start_enabled:
+		_schedule_auto_start()
 	# Infinite waves: stay IDLE so the player can start the next wave.
 	# Never emit all_waves_completed.
+
+
+func _try_auto_start() -> void:
+	if not auto_start_enabled or _stopped_for_game_over:
+		return
+	if GameManager != null and GameManager.is_game_over():
+		return
+	if state != WaveState.IDLE or _level == null:
+		return
+	start_next_wave()
+
+
+func _schedule_auto_start() -> void:
+	if not auto_start_enabled or _stopped_for_game_over:
+		return
+	_auto_start_token += 1
+	var token: int = _auto_start_token
+	var delay: float = maxf(_inter_wave_delay, 0.0)
+	if delay <= 0.0:
+		call_deferred("_try_auto_start")
+		return
+	get_tree().create_timer(delay).timeout.connect(func() -> void:
+		if token != _auto_start_token or not auto_start_enabled:
+			return
+		_try_auto_start()
+	)
 
 
 func _count_active() -> int:

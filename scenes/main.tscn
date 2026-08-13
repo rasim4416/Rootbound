@@ -38,6 +38,7 @@
 [ext_resource type="Resource" path="res://data/progression/upgrades/support_range.tres" id="38_sup_rng"]
 [ext_resource type="Resource" path="res://data/progression/upgrades/support_bonus.tres" id="39_sup_bonus"]
 [ext_resource type="Resource" path="res://data/progression/upgrades/support_assist_xp.tres" id="40_sup_xp"]
+[ext_resource type="Script" path="res://scripts/systems/placement_drag_controller.gd" id="44_drag"]
 
 [sub_resource type="Curve2D" id="Curve2D_sample"]
 _data = {
@@ -107,6 +108,15 @@ organel_layer = NodePath("../OrganelLayer")
 organel_selection = NodePath("../OrganelSelectionManager")
 seed_selection = NodePath("../SeedSelectionManager")
 
+[node name="PlacementDragController" type="Node" parent="." node_paths=PackedStringArray("grid", "shop_manager", "plant_manager", "organel_manager", "ghost_layer", "shop_ui")]
+script = ExtResource("44_drag")
+grid = NodePath("../Grid")
+shop_manager = NodePath("../ShopManager")
+plant_manager = NodePath("../PlantManager")
+organel_manager = NodePath("../OrganelManager")
+ghost_layer = NodePath("../PlantLayer")
+shop_ui = NodePath("../UILayer/ShopUI")
+
 [node name="WaveManager" type="Node" parent="." node_paths=PackedStringArray("path", "grid", "insect_layer")]
 script = ExtResource("13_wave_manager")
 path = NodePath("../Paths/SamplePath")
@@ -155,12 +165,13 @@ core = NodePath("../../Core")
 level_up_controller = NodePath("../../NanobotLevelUpController")
 plant_manager = NodePath("../../PlantManager")
 
-[node name="ShopUI" parent="UILayer" node_paths=PackedStringArray("shop_manager", "seed_selection", "organel_selection", "plant_manager", "organel_manager") instance=ExtResource("8_shop_ui")]
+[node name="ShopUI" parent="UILayer" node_paths=PackedStringArray("shop_manager", "seed_selection", "organel_selection", "plant_manager", "organel_manager", "placement_drag") instance=ExtResource("8_shop_ui")]
 shop_manager = NodePath("../../ShopManager")
 seed_selection = NodePath("../../SeedSelectionManager")
 organel_selection = NodePath("../../OrganelSelectionManager")
 plant_manager = NodePath("../../PlantManager")
 organel_manager = NodePath("../../OrganelManager")
+placement_drag = NodePath("../../PlacementDragController")
 
 [node name="NanobotInfoPanel" parent="UILayer" instance=ExtResource("33_info")]
 
