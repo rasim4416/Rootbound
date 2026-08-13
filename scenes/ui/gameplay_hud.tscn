@@ -1,0 +1,238 @@
+[gd_scene format=3 uid="uid://dm6gwc6ehuima"]
+
+[ext_resource type="Script" path="res://scripts/ui/gameplay_hud.gd" id="1_hud"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.2, 0.28, 0.22, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.5, 0.7, 0.45, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+content_margin_left = 16
+content_margin_top = 8
+content_margin_right = 16
+content_margin_bottom = 8
+
+[node name="GameplayHUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_hud")
+
+[node name="TopBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 16.0
+offset_top = 56.0
+offset_right = -16.0
+offset_bottom = 140.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_constants/separation = 24
+
+[node name="LeftBox" type="VBoxContainer" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="BiomassLabel" type="Label" parent="TopBar/LeftBox"]
+layout_mode = 2
+text = "BIO-ENERGY: 0"
+
+[node name="AtpLabel" type="Label" parent="TopBar/LeftBox"]
+layout_mode = 2
+text = "ATP: 0"
+
+[node name="SeedsLabel" type="Label" parent="TopBar/LeftBox"]
+layout_mode = 2
+text = "NANOBOT UNITS: 0"
+
+[node name="MenuButton" type="Button" parent="TopBar/LeftBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "MENU"
+
+[node name="UpgradesButton" type="Button" parent="TopBar/LeftBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Upgrades available: 0"
+
+[node name="CenterBox" type="VBoxContainer" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="WaveLabel" type="Label" parent="TopBar/CenterBox"]
+layout_mode = 2
+text = "INFECTION WAVE: 0 / 0"
+horizontal_alignment = 1
+
+[node name="WaveStateLabel" type="Label" parent="TopBar/CenterBox"]
+layout_mode = 2
+text = "STABLE"
+horizontal_alignment = 1
+
+[node name="RightBox" type="VBoxContainer" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="CoreLabel" type="Label" parent="TopBar/RightBox"]
+layout_mode = 2
+text = "NUCLEUS: 0 / 0"
+horizontal_alignment = 2
+
+[node name="CoreBar" type="ProgressBar" parent="TopBar/RightBox"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="MetaMaterialsBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -140.0
+offset_top = 150.0
+offset_right = -16.0
+offset_bottom = 290.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="BottomBar" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -88.0
+offset_right = 100.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="AllWavesLabel" type="Label" parent="BottomBar"]
+visible = false
+layout_mode = 2
+text = "ALL INFECTIONS CLEARED"
+horizontal_alignment = 1
+
+[node name="StartWaveButton" type="Button" parent="BottomBar"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "START INFECTION"
+
+[node name="GameOverOverlay" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Dim" type="ColorRect" parent="GameOverOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0.05, 0.06, 0.05, 0.72)
+
+[node name="Panel" type="PanelContainer" parent="GameOverOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -190.0
+offset_right = 200.0
+offset_bottom = 190.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="GameOverOverlay/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Title" type="Label" parent="GameOverOverlay/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "GAME OVER"
+horizontal_alignment = 1
+
+[node name="MapLabel" type="Label" parent="GameOverOverlay/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "CELL INTERIOR"
+horizontal_alignment = 1
+
+[node name="LevelLabel" type="Label" parent="GameOverOverlay/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "LEVEL 1"
+horizontal_alignment = 1
+
+[node name="WaveReachedLabel" type="Label" parent="GameOverOverlay/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "WAVE 1"
+horizontal_alignment = 1
+
+[node name="BestWaveLabel" type="Label" parent="GameOverOverlay/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "BEST WAVE: 0"
+horizontal_alignment = 1
+
+[node name="NewBestLabel" type="Label" parent="GameOverOverlay/Panel/VBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.85, 0.35, 1)
+text = "NEW BEST!"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="GameOverOverlay/Panel/VBox"]
+layout_mode = 2
+text = "The Nucleus has fallen."
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="GameOverOverlay/Panel/VBox"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "RESTART"
+
+[node name="GameOverMenuButton" type="Button" parent="GameOverOverlay/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "MAIN MENU"

@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="LevelData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/level_data.gd" id="1_level"]
+[ext_resource type="Resource" path="res://data/paths/path_01.tres" id="2_path"]
+[ext_resource type="Resource" path="res://data/insects/ant.tres" id="3_enemy"]
+[ext_resource type="Resource" path="res://data/levels/default_wave_scaling.tres" id="4_scaling"]
+[ext_resource type="Script" path="res://scripts/levels/path_activation_rule.gd" id="5_rule"]
+
+[sub_resource type="Resource" id="Rule_p1"]
+script = ExtResource("5_rule")
+path = ExtResource("2_path")
+unlock_from_wave = 1
+
+[resource]
+script = ExtResource("1_level")
+level_id = &"level_01"
+display_name = "Level 1"
+description = "Cell Interior — first defense. Single infection channel (Path 1)."
+grid_columns = 18
+grid_rows = 10
+cell_size = Vector2(64, 64)
+starting_bio_energy = 100.0
+nucleus_max_health = 100.0
+unlock_required_level_id = &""
+unlock_required_best_wave = 0
+level_hp_multiplier = 1.0
+level_speed_multiplier = 1.0
+level_core_damage_multiplier = 1.0
+wave_scaling = ExtResource("4_scaling")
+enemy_pool = Array[InsectData]([ExtResource("3_enemy")])
+grid_path = ExtResource("2_path")
+path_rules = Array[PathActivationRule]([SubResource("Rule_p1")])
+difficulty = 1

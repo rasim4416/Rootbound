@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://researchnode001"]
+
+[ext_resource type="Script" path="res://scripts/research/research_node_ui.gd" id="1_node"]
+
+[node name="ResearchNode" type="Control"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 0
+script = ExtResource("1_node")
+node_type = 0
+tile_size = Vector2(80, 80)

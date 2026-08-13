@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/research/research_data.gd" id="1_research"]
+
+[resource]
+script = ExtResource("1_research")
+research_id = &"inner_membrane"
+display_name = "Inner Membrane"
+description = "Cellular membrane systems supporting organelle integration."
+costs = Array[ResearchCost]([])
+unlocked_by_default = true
+unlockable = true
+permanent_modifiers = Array[StatModifier]([])

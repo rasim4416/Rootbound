@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://b7plantroot001"]
+
+[ext_resource type="Script" path="res://scripts/plants/plant.gd" id="1_plant"]
+[ext_resource type="Resource" path="res://data/plants/clover.tres" id="2_clover"]
+[ext_resource type="Script" path="res://scripts/plants/attack_component.gd" id="3_attack"]
+[ext_resource type="Script" path="res://scripts/plants/bio_energy_producer_component.gd" id="4_bio"]
+
+[node name="Plant" type="Node2D"]
+script = ExtResource("1_plant")
+data = ExtResource("2_clover")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="AttackComponent" type="Node" parent="."]
+script = ExtResource("3_attack")
+
+[node name="BioEnergyProducer" type="Node" parent="."]
+script = ExtResource("4_bio")
+debug_bio_energy = false

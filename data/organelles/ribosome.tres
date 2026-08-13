@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="OrganelData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/organelles/organel_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://scenes/organelles/ribosome.tscn" id="2_scene"]
+[ext_resource type="Resource" path="res://data/progression/proteins/damage_protein.tres" id="3_protein"]
+
+[resource]
+script = ExtResource("1_data")
+organelle_id = &"ribosome"
+display_name = "Ribosome"
+description = "Consumes ATP to synthesize proteins onto nearby Nanobots."
+organelle_role = 1
+build_cost = 45
+build_time = 5.0
+max_health = 70.0
+atp_per_second = 0.0
+production_interval = 10.0
+protein_atp_cost = 10
+protein = ExtResource("3_protein")
+runtime_scene = ExtResource("2_scene")

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ProteinData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/progression/protein_data.gd" id="1_protein"]
+
+[resource]
+script = ExtResource("1_protein")
+protein_id = &"damage_protein"
+display_name = "Damage Protein"
+description = "Enhances the Nanobot's offensive damage by +1% per stack."
+stat_id = &"damage"
+modifier_type = 1
+modifier_value = 0.01
+allow_multiple = true
+unlocked = true

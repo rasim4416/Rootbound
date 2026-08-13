@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/research/research_data.gd" id="1_research"]
+[ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="2_cost"]
+[ext_resource type="Resource" path="res://data/research/elements/hydrogen.tres" id="3_h"]
+[ext_resource type="Resource" path="res://data/research/elements/sulfur.tres" id="4_s"]
+[ext_resource type="Resource" path="res://data/research/elements/nitrogen.tres" id="5_n"]
+
+[sub_resource type="Resource" id="Cost_h"]
+script = ExtResource("2_cost")
+element = ExtResource("3_h")
+amount = 20
+
+[sub_resource type="Resource" id="Cost_s"]
+script = ExtResource("2_cost")
+element = ExtResource("4_s")
+amount = 10
+
+[sub_resource type="Resource" id="Cost_n"]
+script = ExtResource("2_cost")
+element = ExtResource("5_n")
+amount = 15
+
+[resource]
+script = ExtResource("1_research")
+research_id = &"rotation_protein_research"
+display_name = "Rotation Protein"
+description = "Placeholder. Unlocks Rotation Protein research (behavior not implemented yet)."
+costs = Array[ResearchCost]([SubResource("Cost_h"), SubResource("Cost_s"), SubResource("Cost_n")])
+unlocked_by_default = false

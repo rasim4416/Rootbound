@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/research/research_data.gd" id="1_research"]
+
+[resource]
+script = ExtResource("1_research")
+research_id = &"golgi"
+display_name = "Golgi"
+description = "Placeholder packaging / delivery organelle research. Not on the main tree yet."
+costs = Array[ResearchCost]([])
+unlocked_by_default = false
+unlockable = false
+permanent_modifiers = Array[StatModifier]([])

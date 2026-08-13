@@ -1,0 +1,26 @@
+# Godot 4+
+.godot/
+
+# Godot 3 legacy import cache (if any)
+.import/
+
+# Export binaries
+export/
+export_presets.cfg
+*.exe
+*.pck
+*.zip
+
+# Android
+/android/
+*.apk
+
+# System / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Logs / debug
+debug-*.log

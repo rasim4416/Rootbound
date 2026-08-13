@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ElementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/research/element_data.gd" id="1_el"]
+
+[resource]
+script = ExtResource("1_el")
+element_id = &"sulfur"
+symbol = "S"
+display_name = "Sulfur"
+description = "Structural element in specialized proteins."
+atomic_number = 16

@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="WaveData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/insects/wave_data.gd" id="1_wave_data"]
+[ext_resource type="Script" path="res://scripts/insects/wave_spawn_entry.gd" id="2_entry"]
+[ext_resource type="Resource" path="res://data/insects/ant.tres" id="3_bacterium"]
+[ext_resource type="Resource" path="res://data/insects/virus.tres" id="4_virus"]
+
+[sub_resource type="Resource" id="Entry_b2"]
+script = ExtResource("2_entry")
+insect_data = ExtResource("3_bacterium")
+count = 2
+
+[sub_resource type="Resource" id="Entry_v1"]
+script = ExtResource("2_entry")
+insect_data = ExtResource("4_virus")
+count = 1
+
+[sub_resource type="Resource" id="Entry_b1"]
+script = ExtResource("2_entry")
+insect_data = ExtResource("3_bacterium")
+count = 1
+
+[sub_resource type="Resource" id="Entry_v2"]
+script = ExtResource("2_entry")
+insect_data = ExtResource("4_virus")
+count = 1
+
+[resource]
+script = ExtResource("1_wave_data")
+wave_number = 4
+insect_count = 0
+spawn_entries = Array[WaveSpawnEntry]([SubResource("Entry_b2"), SubResource("Entry_v1"), SubResource("Entry_b1"), SubResource("Entry_v2")])
+spawn_interval = 1.5
+delay_before_wave = 3.0

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ShopItem" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/shop/shop_item.gd" id="1_shop"]
+[ext_resource type="Resource" path="res://data/organelles/mitochondrion.tres" id="2_mito"]
+
+[resource]
+script = ExtResource("1_shop")
+item_kind = 1
+organel_data = ExtResource("2_mito")
+biomass_cost = 40
+unlocked = true

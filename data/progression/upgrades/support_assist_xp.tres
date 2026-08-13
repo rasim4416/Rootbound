@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="NanobotUpgradeData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/progression/nanobot_upgrade_data.gd" id="1_up"]
+
+[resource]
+script = ExtResource("1_up")
+upgrade_id = &"support_assist_xp"
+display_name = "XP GAIN"
+description = "+20% Assist XP"
+stat_id = &"assist_xp_reward"
+modifier_type = 1
+modifier_value = 0.2

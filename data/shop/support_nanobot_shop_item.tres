@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ShopItem" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/shop/shop_item.gd" id="1_shop_item"]
+[ext_resource type="Resource" path="res://data/plants/support_nanobot.tres" id="2_support"]
+
+[resource]
+script = ExtResource("1_shop_item")
+plant_data = ExtResource("2_support")
+biomass_cost = 30
+unlocked = true

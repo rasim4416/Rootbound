@@ -1,0 +1,234 @@
+[gd_scene load_steps=7 format=3 uid="uid://researchlab001"]
+
+[ext_resource type="Script" path="res://scripts/menu/research_lab.gd" id="1_lab"]
+[ext_resource type="Script" path="res://scripts/menu/research_lab_backdrop.gd" id="2_backdrop"]
+[ext_resource type="PackedScene" path="res://scenes/research/research_node.tscn" id="3_node"]
+[ext_resource type="Script" path="res://scripts/research/research_connection_renderer.gd" id="4_conn"]
+[ext_resource type="PackedScene" path="res://scenes/research/research_detail_panel.tscn" id="5_detail"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar"]
+bg_color = Color(0.04, 0.07, 0.11, 0.78)
+border_width_bottom = 1
+border_color = Color(0.28, 0.55, 0.68, 0.55)
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+
+[node name="ResearchLab" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lab")
+
+[node name="Backdrop" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_backdrop")
+
+[node name="TopBar" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 56.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_topbar")
+
+[node name="HBox" type="HBoxContainer" parent="TopBar"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="TopBar/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.75, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 28
+text = "RESEARCH LAB"
+
+[node name="BackButton" type="Button" parent="TopBar/HBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 36)
+layout_mode = 2
+text = "BACK"
+
+[node name="GraphViewport" type="Control" parent="."]
+unique_name_in_owner = true
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 64.0
+offset_right = -320.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="GraphArea" type="Control" parent="GraphViewport"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(1600, 1200)
+layout_mode = 0
+offset_right = 1600.0
+offset_bottom = 1200.0
+mouse_filter = 2
+
+[node name="PanSurface" type="Control" parent="GraphViewport/GraphArea"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Connections" type="Control" parent="GraphViewport/GraphArea"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_conn")
+
+[node name="Center" parent="GraphViewport/GraphArea" instance=ExtResource("3_node")]
+layout_mode = 0
+offset_left = 560.0
+offset_top = 60.0
+offset_right = 640.0
+offset_bottom = 140.0
+node_id = &"center"
+node_type = 0
+fallback_display_name = "Center"
+
+[node name="GeneratorNanobot" parent="GraphViewport/GraphArea" instance=ExtResource("3_node")]
+layout_mode = 0
+offset_left = 280.0
+offset_top = 220.0
+offset_right = 360.0
+offset_bottom = 300.0
+node_id = &"generator_nanobot"
+node_type = 0
+parent_node_ids = Array[StringName]([&"center"])
+fallback_display_name = "Generator Nanobot"
+
+[node name="GeneratorCost" parent="GraphViewport/GraphArea" instance=ExtResource("3_node")]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 196.0
+offset_right = 216.0
+offset_bottom = 244.0
+tile_size = Vector2(48, 48)
+node_id = &"generator_cost"
+node_type = 1
+parent_node_ids = Array[StringName]([&"generator_nanobot"])
+fallback_display_name = "Cost Modifier"
+
+[node name="GeneratorInterval" parent="GraphViewport/GraphArea" instance=ExtResource("3_node")]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 256.0
+offset_right = 216.0
+offset_bottom = 304.0
+tile_size = Vector2(48, 48)
+node_id = &"generator_interval"
+node_type = 1
+parent_node_ids = Array[StringName]([&"generator_nanobot"])
+fallback_display_name = "Energy Production Interval"
+
+[node name="GeneratorProduction" parent="GraphViewport/GraphArea" instance=ExtResource("3_node")]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 316.0
+offset_right = 216.0
+offset_bottom = 364.0
+tile_size = Vector2(48, 48)
+node_id = &"generator_production"
+node_type = 1
+parent_node_ids = Array[StringName]([&"generator_nanobot"])
+fallback_display_name = "Production"
+
+[node name="AttackingNanobot" parent="GraphViewport/GraphArea" instance=ExtResource("3_node")]
+layout_mode = 0
+offset_left = 280.0
+offset_top = 380.0
+offset_right = 360.0
+offset_bottom = 460.0
+node_id = &"attacking_nanobot"
+node_type = 0
+parent_node_ids = Array[StringName]([&"generator_nanobot"])
+fallback_display_name = "Attacking Nanobot"
+
+[node name="SupportNanobot" parent="GraphViewport/GraphArea" instance=ExtResource("3_node")]
+layout_mode = 0
+offset_left = 280.0
+offset_top = 540.0
+offset_right = 360.0
+offset_bottom = 620.0
+node_id = &"support_nanobot"
+node_type = 0
+parent_node_ids = Array[StringName]([&"attacking_nanobot"])
+fallback_display_name = "Support Nanobot"
+
+[node name="InnerMembrane" parent="GraphViewport/GraphArea" instance=ExtResource("3_node")]
+layout_mode = 0
+offset_left = 840.0
+offset_top = 220.0
+offset_right = 920.0
+offset_bottom = 300.0
+node_id = &"inner_membrane"
+node_type = 0
+parent_node_ids = Array[StringName]([&"center"])
+fallback_display_name = "Inner Membrane"
+
+[node name="Mitochondrion" parent="GraphViewport/GraphArea" instance=ExtResource("3_node")]
+layout_mode = 0
+offset_left = 840.0
+offset_top = 380.0
+offset_right = 920.0
+offset_bottom = 460.0
+node_id = &"mitochondrion"
+node_type = 0
+parent_node_ids = Array[StringName]([&"inner_membrane"])
+fallback_display_name = "Mitochondrion"
+
+[node name="Ribosome" parent="GraphViewport/GraphArea" instance=ExtResource("3_node")]
+layout_mode = 0
+offset_left = 840.0
+offset_top = 540.0
+offset_right = 920.0
+offset_bottom = 620.0
+node_id = &"ribosome"
+node_type = 0
+parent_node_ids = Array[StringName]([&"mitochondrion"])
+fallback_display_name = "Ribosome"
+
+[node name="ResearchDetailPanel" parent="." instance=ExtResource("5_detail")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = -448.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0

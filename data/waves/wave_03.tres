@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="WaveData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/insects/wave_data.gd" id="1_wave_data"]
+[ext_resource type="Resource" path="res://data/insects/ant.tres" id="2_ant"]
+
+[resource]
+script = ExtResource("1_wave_data")
+wave_number = 3
+insect_data = ExtResource("2_ant")
+insect_count = 5
+spawn_interval = 1.5
+delay_before_wave = 3.0

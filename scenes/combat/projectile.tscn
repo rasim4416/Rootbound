@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://projectile001"]
+
+[ext_resource type="Script" path="res://scripts/combat/projectile.gd" id="1_projectile"]
+
+[node name="Projectile" type="Node2D"]
+script = ExtResource("1_projectile")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Glow" type="Polygon2D" parent="Visual"]
+color = Color(0.35, 0.95, 1, 0.45)
+polygon = PackedVector2Array(0, -7, 5, -2, 7, 3, 0, 7, -7, 3, -5, -2)
+
+[node name="Core" type="Polygon2D" parent="Visual"]
+color = Color(0.9, 1, 1, 1)
+polygon = PackedVector2Array(0, -4, 3, -1, 4, 2, 0, 4, -4, 2, -3, -1)
+
+[node name="Tip" type="Polygon2D" parent="Visual"]
+color = Color(0.55, 1, 1, 1)
+polygon = PackedVector2Array(4, -1, 10, 0, 4, 1)

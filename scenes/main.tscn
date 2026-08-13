@@ -1,0 +1,178 @@
+[gd_scene load_steps=41 format=3 uid="uid://c8k2m5n7p1q4r"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/systems/grid_manager.gd" id="2_grid"]
+[ext_resource type="Script" path="res://scripts/systems/plant_manager.gd" id="3_plant_manager"]
+[ext_resource type="PackedScene" path="res://scenes/plants/plant.tscn" id="4_plant_scene"]
+[ext_resource type="Script" path="res://scripts/shop/shop_manager.gd" id="6_shop_manager"]
+[ext_resource type="Resource" path="res://data/shop/clover_shop_item.tres" id="7_clover_shop"]
+[ext_resource type="PackedScene" path="res://scenes/ui/shop_ui.tscn" id="8_shop_ui"]
+[ext_resource type="Script" path="res://scripts/systems/seed_selection_manager.gd" id="9_seed_selection"]
+[ext_resource type="PackedScene" path="res://scenes/insects/insect.tscn" id="11_insect_scene"]
+[ext_resource type="Script" path="res://scripts/insects/wave_manager.gd" id="13_wave_manager"]
+[ext_resource type="Script" path="res://scripts/systems/targeting_system.gd" id="17_targeting"]
+[ext_resource type="Script" path="res://scripts/systems/reward_manager.gd" id="20_reward"]
+[ext_resource type="Resource" path="res://data/shop/thornbush_shop_item.tres" id="21_thornbush_shop"]
+[ext_resource type="Resource" path="res://data/shop/support_nanobot_shop_item.tres" id="38_support_shop"]
+[ext_resource type="Resource" path="res://data/shop/mitochondrion_shop_item.tres" id="39_mito_shop"]
+[ext_resource type="Resource" path="res://data/shop/ribosome_shop_item.tres" id="40_ribo_shop"]
+[ext_resource type="Script" path="res://scripts/systems/organel_selection_manager.gd" id="41_organel_sel"]
+[ext_resource type="Script" path="res://scripts/systems/organel_manager.gd" id="42_organel_mgr"]
+[ext_resource type="PackedScene" path="res://scenes/ui/organel_info_panel.tscn" id="43_organel_info"]
+[ext_resource type="PackedScene" path="res://scenes/core/core.tscn" id="22_core"]
+[ext_resource type="Script" path="res://scripts/core/core_damage_system.gd" id="23_core_damage"]
+[ext_resource type="PackedScene" path="res://scenes/ui/gameplay_hud.tscn" id="24_hud"]
+[ext_resource type="Script" path="res://scripts/systems/game_over_manager.gd" id="25_game_over"]
+[ext_resource type="Script" path="res://scripts/visuals/map_background.gd" id="26_map_bg"]
+[ext_resource type="Script" path="res://scripts/visuals/path_visual.gd" id="27_path_visual"]
+[ext_resource type="Script" path="res://scripts/visuals/planting_area_visual.gd" id="28_planting"]
+[ext_resource type="Script" path="res://scripts/combat/projectile_manager.gd" id="29_projectile_mgr"]
+[ext_resource type="PackedScene" path="res://scenes/combat/projectile.tscn" id="30_projectile"]
+[ext_resource type="Script" path="res://scripts/systems/nanobot_level_up_controller.gd" id="31_level_up_ctrl"]
+[ext_resource type="PackedScene" path="res://scenes/ui/nanobot_level_up.tscn" id="32_level_up_ui"]
+[ext_resource type="PackedScene" path="res://scenes/ui/nanobot_info_panel.tscn" id="33_info"]
+[ext_resource type="Resource" path="res://data/progression/upgrades/nanobot_damage.tres" id="34_up_dmg"]
+[ext_resource type="Resource" path="res://data/progression/upgrades/nanobot_attack_speed.tres" id="35_up_spd"]
+[ext_resource type="Resource" path="res://data/progression/upgrades/nanobot_range.tres" id="36_up_rng"]
+[ext_resource type="Resource" path="res://data/progression/upgrades/nanobot_rotation_speed.tres" id="37_up_rot"]
+[ext_resource type="Resource" path="res://data/progression/upgrades/support_range.tres" id="38_sup_rng"]
+[ext_resource type="Resource" path="res://data/progression/upgrades/support_bonus.tres" id="39_sup_bonus"]
+[ext_resource type="Resource" path="res://data/progression/upgrades/support_assist_xp.tres" id="40_sup_xp"]
+
+[sub_resource type="Curve2D" id="Curve2D_sample"]
+_data = {
+"points": PackedVector2Array(-40, 0, 40, 0, 28, 320, -60, 0, 60, 0, 320, 200, -50, 0, 50, 0, 560, 360, -40, 0, 40, 0, 800, 240, -40, 0, 40, 0, 1088, 320)
+}
+point_count = 5
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="Background" type="Node2D" parent="."]
+script = ExtResource("26_map_bg")
+
+[node name="Grid" type="Node2D" parent="."]
+script = ExtResource("2_grid")
+cell_size = Vector2(64, 64)
+columns = 18
+rows = 10
+grid_origin = Vector2(0, 0)
+show_debug_grid = false
+debug_line_color = Color(1, 1, 1, 0.12)
+
+[node name="PlantingAreaVisual" type="Node2D" parent="Grid"]
+script = ExtResource("28_planting")
+
+[node name="Paths" type="Node2D" parent="."]
+
+[node name="SamplePath" type="Path2D" parent="Paths"]
+curve = SubResource("Curve2D_sample")
+
+[node name="PathVisual" type="Node2D" parent="Paths" node_paths=PackedStringArray("grid")]
+script = ExtResource("27_path_visual")
+grid = NodePath("../../Grid")
+
+[node name="PlantLayer" type="Node2D" parent="."]
+
+[node name="OrganelLayer" type="Node2D" parent="."]
+
+[node name="InsectLayer" type="Node2D" parent="."]
+
+[node name="ProjectileLayer" type="Node2D" parent="."]
+
+[node name="Core" parent="." instance=ExtResource("22_core")]
+
+[node name="ShopManager" type="Node" parent="."]
+script = ExtResource("6_shop_manager")
+shop_items = Array[ShopItem]([ExtResource("7_clover_shop"), ExtResource("21_thornbush_shop"), ExtResource("38_support_shop"), ExtResource("39_mito_shop"), ExtResource("40_ribo_shop")])
+
+[node name="SeedSelectionManager" type="Node" parent="."]
+script = ExtResource("9_seed_selection")
+
+[node name="OrganelSelectionManager" type="Node" parent="."]
+script = ExtResource("41_organel_sel")
+
+[node name="PlantManager" type="Node" parent="." node_paths=PackedStringArray("grid", "plant_layer", "seed_selection", "organel_selection")]
+script = ExtResource("3_plant_manager")
+grid = NodePath("../Grid")
+plant_layer = NodePath("../PlantLayer")
+seed_selection = NodePath("../SeedSelectionManager")
+organel_selection = NodePath("../OrganelSelectionManager")
+plant_scene = ExtResource("4_plant_scene")
+
+[node name="OrganelManager" type="Node" parent="." node_paths=PackedStringArray("grid", "organel_layer", "organel_selection", "seed_selection")]
+script = ExtResource("42_organel_mgr")
+grid = NodePath("../Grid")
+organel_layer = NodePath("../OrganelLayer")
+organel_selection = NodePath("../OrganelSelectionManager")
+seed_selection = NodePath("../SeedSelectionManager")
+
+[node name="WaveManager" type="Node" parent="." node_paths=PackedStringArray("path", "grid", "insect_layer")]
+script = ExtResource("13_wave_manager")
+path = NodePath("../Paths/SamplePath")
+grid = NodePath("../Grid")
+insect_layer = NodePath("../InsectLayer")
+insect_scene = ExtResource("11_insect_scene")
+auto_start_first_wave = false
+
+[node name="TargetingSystem" type="Node" parent="." node_paths=PackedStringArray("insect_layer")]
+script = ExtResource("17_targeting")
+insect_layer = NodePath("../InsectLayer")
+debug_print_nearest = false
+debug_origin = Vector2(560, 320)
+debug_range = 400.0
+
+[node name="RewardManager" type="Node" parent="." node_paths=PackedStringArray("wave_manager")]
+script = ExtResource("20_reward")
+wave_manager = NodePath("../WaveManager")
+debug_rewards = false
+debug_nanobot_xp = false
+
+[node name="CoreDamageSystem" type="Node" parent="." node_paths=PackedStringArray("core", "wave_manager")]
+script = ExtResource("23_core_damage")
+core = NodePath("../Core")
+wave_manager = NodePath("../WaveManager")
+debug_core_damage = false
+
+[node name="ProjectileManager" type="Node" parent="." node_paths=PackedStringArray("projectile_layer")]
+script = ExtResource("29_projectile_mgr")
+projectile_layer = NodePath("../ProjectileLayer")
+projectile_scene = ExtResource("30_projectile")
+debug_log_projectiles = false
+
+[node name="NanobotLevelUpController" type="Node" parent="." node_paths=PackedStringArray("level_up_ui")]
+script = ExtResource("31_level_up_ctrl")
+level_up_ui = NodePath("../UILayer/NanobotLevelUpUI")
+upgrades = Array[NanobotUpgradeData]([ExtResource("34_up_dmg"), ExtResource("35_up_spd"), ExtResource("36_up_rng"), ExtResource("37_up_rot")])
+support_upgrades = Array[NanobotUpgradeData]([ExtResource("38_sup_rng"), ExtResource("39_sup_bonus"), ExtResource("40_sup_xp")])
+debug_nanobot_xp = false
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="GameplayHUD" parent="UILayer" node_paths=PackedStringArray("wave_manager", "core", "level_up_controller", "plant_manager") instance=ExtResource("24_hud")]
+wave_manager = NodePath("../../WaveManager")
+core = NodePath("../../Core")
+level_up_controller = NodePath("../../NanobotLevelUpController")
+plant_manager = NodePath("../../PlantManager")
+
+[node name="ShopUI" parent="UILayer" node_paths=PackedStringArray("shop_manager", "seed_selection", "organel_selection", "plant_manager", "organel_manager") instance=ExtResource("8_shop_ui")]
+shop_manager = NodePath("../../ShopManager")
+seed_selection = NodePath("../../SeedSelectionManager")
+organel_selection = NodePath("../../OrganelSelectionManager")
+plant_manager = NodePath("../../PlantManager")
+organel_manager = NodePath("../../OrganelManager")
+
+[node name="NanobotInfoPanel" parent="UILayer" instance=ExtResource("33_info")]
+
+[node name="OrganelInfoPanel" parent="UILayer" instance=ExtResource("43_organel_info")]
+
+[node name="NanobotLevelUpUI" parent="UILayer" instance=ExtResource("32_level_up_ui")]
+
+[node name="GameOverManager" type="Node" parent="." node_paths=PackedStringArray("core", "wave_manager", "insect_layer", "gameplay_hud", "projectile_manager", "level_up_controller")]
+script = ExtResource("25_game_over")
+core = NodePath("../Core")
+wave_manager = NodePath("../WaveManager")
+insect_layer = NodePath("../InsectLayer")
+gameplay_hud = NodePath("../UILayer/GameplayHUD")
+projectile_manager = NodePath("../ProjectileManager")
+level_up_controller = NodePath("../NanobotLevelUpController")

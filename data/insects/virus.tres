@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="InsectData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/insects/insect_data.gd" id="1_insect_data"]
+[ext_resource type="Script" path="res://scripts/research/element_drop.gd" id="2_drop"]
+[ext_resource type="Resource" path="res://data/research/elements/nitrogen.tres" id="3_n"]
+[ext_resource type="Resource" path="res://data/research/elements/oxygen.tres" id="4_o"]
+
+[sub_resource type="Resource" id="Drop_n"]
+script = ExtResource("2_drop")
+element = ExtResource("3_n")
+amount = 1
+chance = 0.75
+
+[sub_resource type="Resource" id="Drop_o"]
+script = ExtResource("2_drop")
+element = ExtResource("4_o")
+amount = 1
+chance = 0.5
+
+[resource]
+script = ExtResource("1_insect_data")
+insect_id = &"virus"
+display_name = "Virus"
+description = "A fast, fragile pathogen that races toward the Nucleus."
+insect_role = 2
+visual_id = &"virus"
+max_health = 25.0
+move_speed = 140.0
+attack_damage = 10.0
+attack_range = 0.0
+attack_cooldown = 0.0
+biomass_reward = 8
+xp_reward = 35.0
+assist_xp_reward = 10.0
+element_drops = Array[ElementDrop]([SubResource("Drop_n"), SubResource("Drop_o")])

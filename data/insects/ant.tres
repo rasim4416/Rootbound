@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="InsectData" format=3 uid="uid://3cmnq7uwwyd3"]
+
+[ext_resource type="Script" uid="uid://dwn2lt7wb5hn4" path="res://scripts/insects/insect_data.gd" id="1_insect_data"]
+[ext_resource type="Script" uid="uid://kqh5qpdbag3i" path="res://scripts/research/element_drop.gd" id="2_drop"]
+[ext_resource type="Resource" path="res://data/research/elements/carbon.tres" id="3_c"]
+[ext_resource type="Resource" path="res://data/research/elements/hydrogen.tres" id="4_h"]
+
+[sub_resource type="Resource" id="Drop_c"]
+script = ExtResource("2_drop")
+element = ExtResource("3_c")
+
+[sub_resource type="Resource" id="Drop_h"]
+script = ExtResource("2_drop")
+element = ExtResource("4_h")
+chance = 0.5
+
+[resource]
+script = ExtResource("1_insect_data")
+insect_id = &"ant"
+display_name = "Bacterium"
+description = "A basic pathogen that invades toward the Nucleus."
+max_health = 50.0
+move_speed = 80.0
+attack_damage = 10.0
+attack_range = 40.0
+attack_cooldown = 1.5
+biomass_reward = 5
+xp_reward = 25.0
+element_drops = Array[ExtResource("2_drop")]([SubResource("Drop_c"), SubResource("Drop_h")])

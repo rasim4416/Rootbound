@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ShopItem" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/shop/shop_item.gd" id="1_shop_item"]
+[ext_resource type="Resource" path="res://data/plants/clover.tres" id="2_clover"]
+
+[resource]
+script = ExtResource("1_shop_item")
+plant_data = ExtResource("2_clover")
+biomass_cost = 20
+unlocked = true

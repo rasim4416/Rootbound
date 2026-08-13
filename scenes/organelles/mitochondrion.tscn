@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://organelmito001"]
+
+[ext_resource type="Script" path="res://scripts/organelles/organel.gd" id="1_organel"]
+[ext_resource type="Script" path="res://scripts/organelles/atp_producer_component.gd" id="2_atp"]
+
+[node name="Mitochondrion" type="Node2D"]
+script = ExtResource("1_organel")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="ATPProducer" type="Node" parent="."]
+script = ExtResource("2_atp")
+debug_atp = false

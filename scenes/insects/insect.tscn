@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://insectroot001"]
+
+[ext_resource type="Script" path="res://scripts/insects/insect.gd" id="1_insect"]
+[ext_resource type="Resource" path="res://data/insects/ant.tres" id="2_ant"]
+[ext_resource type="Script" path="res://scripts/insects/insect_health_bar.gd" id="3_hp_bar"]
+
+[node name="Insect" type="Node2D"]
+script = ExtResource("1_insect")
+data = ExtResource("2_ant")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="HealthBar" type="Node2D" parent="."]
+script = ExtResource("3_hp_bar")

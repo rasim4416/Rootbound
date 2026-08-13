@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/research/research_data.gd" id="1_research"]
+[ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="2_cost"]
+[ext_resource type="Resource" path="res://data/research/elements/carbon.tres" id="3_c"]
+[ext_resource type="Resource" path="res://data/research/elements/nitrogen.tres" id="4_n"]
+[ext_resource type="Resource" path="res://data/research/elements/oxygen.tres" id="5_o"]
+
+[sub_resource type="Resource" id="Cost_c"]
+script = ExtResource("2_cost")
+element = ExtResource("3_c")
+amount = 20
+
+[sub_resource type="Resource" id="Cost_n"]
+script = ExtResource("2_cost")
+element = ExtResource("4_n")
+amount = 10
+
+[sub_resource type="Resource" id="Cost_o"]
+script = ExtResource("2_cost")
+element = ExtResource("5_o")
+amount = 10
+
+[resource]
+script = ExtResource("1_research")
+research_id = &"attack_speed_protein_research"
+display_name = "Attack Speed Protein"
+description = "Placeholder. Unlocks Attack Speed Protein research (behavior not implemented yet)."
+costs = Array[ResearchCost]([SubResource("Cost_c"), SubResource("Cost_n"), SubResource("Cost_o")])
+unlocked_by_default = false

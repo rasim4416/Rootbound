@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WaveScalingConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/wave_scaling_config.gd" id="1_scaling"]
+
+[resource]
+script = ExtResource("1_scaling")
+hp_coeff = 0.08
+hp_power = 0.85
+speed_coeff = 0.025
+core_damage_coeff = 0.05
+count_base = 3.0
+count_per_wave = 1.5
+interval_base = 2.0
+interval_power = -0.12
+interval_min = 0.35
+delay_before_wave = 0.0

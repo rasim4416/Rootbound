@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="OrganelData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/organelles/organel_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://scenes/organelles/mitochondrion.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_data")
+organelle_id = &"mitochondrion"
+display_name = "Mitochondrion"
+description = "Produces ATP (Cell Energy) for organelle systems."
+organelle_role = 0
+build_cost = 40
+build_time = 5.0
+max_health = 80.0
+atp_per_second = 1.0
+production_interval = 10.0
+protein_atp_cost = 10
+runtime_scene = ExtResource("2_scene")

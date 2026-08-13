@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="NanobotProgressionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/progression/nanobot_progression_data.gd" id="1_prog"]
+
+[resource]
+script = ExtResource("1_prog")
+progression_id = &"default"
+xp_thresholds = Array[float]([100.0, 150.0, 225.0, 325.0, 450.0])
+max_level = 10
