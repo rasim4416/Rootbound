@@ -24,3 +24,7 @@ description = "Permanent +1 ATP/sec global generation."
 costs = Array[ResearchCost]([SubResource("Cost_n")])
 unlocked_by_default = false
 permanent_modifiers = Array[StatModifier]([SubResource("Mod_atp")])
+editor_position = Vector2(1240, 60)
+prerequisite_ids = Array[StringName]([&"mitochondrion"])
+tier = 2
+unlockable = true

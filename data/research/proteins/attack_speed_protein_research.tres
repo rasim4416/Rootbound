@@ -28,3 +28,7 @@ display_name = "Attack Speed Protein"
 description = "Placeholder. Unlocks Attack Speed Protein research (behavior not implemented yet)."
 costs = Array[ResearchCost]([SubResource("Cost_c"), SubResource("Cost_n"), SubResource("Cost_o")])
 unlocked_by_default = false
+editor_position = Vector2(1100, 380)
+prerequisite_ids = Array[StringName]([&"ribosome"])
+tier = 3
+unlockable = true

@@ -11,3 +11,6 @@ costs = Array[ResearchCost]([])
 unlocked_by_default = true
 unlockable = true
 permanent_modifiers = Array[StatModifier]([])
+editor_position = Vector2(840, 380)
+prerequisite_ids = Array[StringName]([&"inner_membrane"])
+tier = 1

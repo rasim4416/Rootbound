@@ -4,10 +4,10 @@ extends RefCounted
 
 const PORTRAIT_DIR: String = "res://assets/research/portraits/"
 
-## Maps gameplay PlantData.plant_id → research portrait filename id.
+## Maps gameplay PlantData.plant_id (legacy) → research portrait filename id.
 const PLANT_PORTRAIT_IDS: Dictionary = {
-	&"clover": &"generator_nanobot",
-	&"thornbush": &"attacking_nanobot",
+	&"clover": &"generator_nanobot", # Generator Nanobot
+	&"thornbush": &"attacking_nanobot", # Attacking Nanobot
 	&"support_nanobot": &"support_nanobot",
 }
 
@@ -35,6 +35,23 @@ static func get_plant_portrait(plant_id: StringName) -> Texture2D:
 
 static func get_organelle_portrait(organelle_id: StringName) -> Texture2D:
 	return get_portrait(organelle_id)
+
+
+static func list_portrait_ids() -> PackedStringArray:
+	var ids := PackedStringArray()
+	var dir := DirAccess.open(PORTRAIT_DIR)
+	if dir == null:
+		return ids
+	dir.list_dir_begin()
+	var entry_name: String = dir.get_next()
+	while entry_name != "":
+		if not dir.current_is_dir() and entry_name.begins_with("portrait_") and entry_name.ends_with(".png"):
+			var id_part: String = entry_name.trim_prefix("portrait_").trim_suffix(".png")
+			ids.append(id_part)
+		entry_name = dir.get_next()
+	dir.list_dir_end()
+	ids.sort()
+	return ids
 
 
 static func _path_for(node_id: StringName) -> String:

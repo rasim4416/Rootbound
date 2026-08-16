@@ -20,3 +20,6 @@ unlocked_by_default = false
 unlockable = true
 protein = ExtResource("2_protein")
 permanent_modifiers = Array[StatModifier]([SubResource("Mod_damage")])
+editor_position = Vector2(1100, 60)
+prerequisite_ids = Array[StringName]([&"attacking_nanobot"])
+tier = 2

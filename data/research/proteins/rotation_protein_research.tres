@@ -28,3 +28,7 @@ display_name = "Rotation Protein"
 description = "Placeholder. Unlocks Rotation Protein research (behavior not implemented yet)."
 costs = Array[ResearchCost]([SubResource("Cost_h"), SubResource("Cost_s"), SubResource("Cost_n")])
 unlocked_by_default = false
+editor_position = Vector2(1100, 540)
+prerequisite_ids = Array[StringName]([&"ribosome"])
+tier = 3
+unlockable = true

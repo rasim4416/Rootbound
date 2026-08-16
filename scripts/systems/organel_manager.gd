@@ -24,6 +24,8 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if GameManager != null and GameManager.is_game_over():
 		return
+	if _is_path_dev_active():
+		return
 	if _is_placement_drag_active():
 		return
 	if grid == null or organel_layer == null:
@@ -174,3 +176,51 @@ func _is_placement_drag_active() -> bool:
 		if controller != null and controller.is_dragging():
 			return true
 	return false
+
+
+func _is_path_dev_active() -> bool:
+	if get_tree() == null:
+		return false
+	for node: Node in get_tree().get_nodes_in_group("path_dev_mode"):
+		if node != null and node.get("is_active") == true:
+			return true
+	for node2: Node in get_tree().get_nodes_in_group("dev_editor"):
+		if node2 != null and bool(node2.get("is_active")) and not bool(node2.get("is_playtesting")):
+			return true
+	for node3: Node in get_tree().get_nodes_in_group("wave_designer"):
+		if node3 != null and bool(node3.get("is_active")):
+			return true
+	for node4: Node in get_tree().get_nodes_in_group("research_designer"):
+		if node4 != null and bool(node4.get("is_active")):
+			return true
+	return false
+
+
+## Dev Editor playtest: remove all placed organelles.
+func clear_all_placed() -> void:
+	_clear_selection()
+	var items: Array = _occupancy.values()
+	_occupancy.clear()
+	for o: Variant in items:
+		if o != null and is_instance_valid(o):
+			(o as Node).queue_free()
+
+
+## Dev Editor: place organelle without inventory spend.
+func dev_place_at_cell(cell: Vector2i, organelle_id: StringName) -> bool:
+	if grid == null or organelle_id == &"":
+		return false
+	var path: String = "res://data/organelles/%s.tres" % String(organelle_id)
+	if not ResourceLoader.exists(path):
+		push_warning("OrganelManager.dev_place_at_cell: missing %s" % path)
+		return false
+	var data: OrganelData = load(path) as OrganelData
+	if data == null:
+		return false
+	var was_restrict: bool = grid.restrict_build_to_slots
+	grid.restrict_build_to_slots = false
+	var ok: bool = false
+	if grid.is_in_bounds(cell) and not grid.is_occupied(cell) and not grid.is_path_cell(cell):
+		ok = _place_organel(cell, data)
+	grid.restrict_build_to_slots = was_restrict
+	return ok

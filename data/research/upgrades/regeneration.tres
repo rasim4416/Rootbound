@@ -24,3 +24,7 @@ description = "Permanent +2 Nanobot HP/sec regeneration."
 costs = Array[ResearchCost]([SubResource("Cost_o")])
 unlocked_by_default = false
 permanent_modifiers = Array[StatModifier]([SubResource("Mod_regen")])
+editor_position = Vector2(1240, 140)
+prerequisite_ids = Array[StringName]([&"attacking_nanobot"])
+tier = 2
+unlockable = true

@@ -11,3 +11,5 @@ costs = Array[ResearchCost]([])
 unlocked_by_default = true
 unlockable = true
 permanent_modifiers = Array[StatModifier]([])
+editor_position = Vector2(560, 60)
+tier = 1

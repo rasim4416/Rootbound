@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://c8k2m5n7p1q4r"]
+[gd_scene load_steps=43 format=3 uid="uid://c8k2m5n7p1q4r"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/systems/grid_manager.gd" id="2_grid"]
@@ -39,6 +39,8 @@
 [ext_resource type="Resource" path="res://data/progression/upgrades/support_bonus.tres" id="39_sup_bonus"]
 [ext_resource type="Resource" path="res://data/progression/upgrades/support_assist_xp.tres" id="40_sup_xp"]
 [ext_resource type="Script" path="res://scripts/systems/placement_drag_controller.gd" id="44_drag"]
+[ext_resource type="Script" path="res://scripts/dev/research_designer/research_designer.gd" id="50_research_designer"]
+[ext_resource type="Script" path="res://scripts/dev/research_designer/research_designer_ui.gd" id="51_research_designer_ui"]
 
 [sub_resource type="Curve2D" id="Curve2D_sample"]
 _data = {
@@ -187,3 +189,10 @@ insect_layer = NodePath("../InsectLayer")
 gameplay_hud = NodePath("../UILayer/GameplayHUD")
 projectile_manager = NodePath("../ProjectileManager")
 level_up_controller = NodePath("../NanobotLevelUpController")
+
+[node name="ResearchDesignerUI" type="CanvasLayer" parent="."]
+script = ExtResource("51_research_designer_ui")
+
+[node name="ResearchDesigner" type="Node" parent="." node_paths=PackedStringArray("ui")]
+script = ExtResource("50_research_designer")
+ui = NodePath("../ResearchDesignerUI")

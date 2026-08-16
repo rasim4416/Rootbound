@@ -25,3 +25,6 @@ costs = Array[ResearchCost]([SubResource("Cost_c")])
 unlocked_by_default = false
 unlockable = true
 permanent_modifiers = Array[StatModifier]([SubResource("Mod_interval")])
+editor_position = Vector2(168, 256)
+prerequisite_ids = Array[StringName]([&"generator_nanobot"])
+tier = 2

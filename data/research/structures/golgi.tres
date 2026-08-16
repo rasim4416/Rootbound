@@ -11,3 +11,6 @@ costs = Array[ResearchCost]([])
 unlocked_by_default = false
 unlockable = false
 permanent_modifiers = Array[StatModifier]([])
+editor_position = Vector2(1100, 220)
+prerequisite_ids = Array[StringName]([&"ribosome"])
+tier = 1

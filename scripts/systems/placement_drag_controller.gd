@@ -36,6 +36,8 @@ func begin_drag(item: ShopItem) -> void:
 		return
 	if GameManager != null and GameManager.is_game_over():
 		return
+	if _is_path_dev_active():
+		return
 	if shop_ui != null:
 		shop_ui.hide_tooltip()
 	_cancel_drag()
@@ -163,6 +165,24 @@ func _resolve_texture(item: ShopItem) -> Texture2D:
 	if item.is_organelle() and item.organel_data != null:
 		return UnitGameplaySprites.get_organelle_sprite(item.organel_data.organelle_id)
 	return null
+
+
+func _is_path_dev_active() -> bool:
+	if get_tree() == null:
+		return false
+	for node: Node in get_tree().get_nodes_in_group("path_dev_mode"):
+		if node != null and node.get("is_active") == true:
+			return true
+	for node2: Node in get_tree().get_nodes_in_group("dev_editor"):
+		if node2 != null and bool(node2.get("is_active")) and not bool(node2.get("is_playtesting")):
+			return true
+	for node3: Node in get_tree().get_nodes_in_group("wave_designer"):
+		if node3 != null and bool(node3.get("is_active")):
+			return true
+	for node4: Node in get_tree().get_nodes_in_group("research_designer"):
+		if node4 != null and bool(node4.get("is_active")):
+			return true
+	return false
 
 
 class _CellOverlay extends Node2D:

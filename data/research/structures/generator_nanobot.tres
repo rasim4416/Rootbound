@@ -11,3 +11,6 @@ costs = Array[ResearchCost]([])
 unlocked_by_default = true
 unlockable = true
 permanent_modifiers = Array[StatModifier]([])
+editor_position = Vector2(280, 220)
+prerequisite_ids = Array[StringName]([&"center"])
+tier = 1
