@@ -43,6 +43,8 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if GameManager != null and GameManager.is_game_over():
 		return
+	if _is_placement_drag_active():
+		return
 	if grid == null or plant_layer == null or seed_selection == null:
 		return
 
@@ -116,8 +118,17 @@ func _try_select_or_open_fabricator(world_position: Vector2) -> bool:
 		return false
 
 	_clear_selection()
-	empty_cell_clicked.emit(cell)
-	return true
+	return false
+
+
+func _is_placement_drag_active() -> bool:
+	if get_tree() == null:
+		return false
+	for node: Node in get_tree().get_nodes_in_group("placement_drag_controller"):
+		var controller := node as PlacementDragController
+		if controller != null and controller.is_dragging():
+			return true
+	return false
 
 
 func get_selected_nanobot() -> Plant:

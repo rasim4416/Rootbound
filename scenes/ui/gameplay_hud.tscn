@@ -139,10 +139,10 @@ layout_mode = 2
 text = "ALL INFECTIONS CLEARED"
 horizontal_alignment = 1
 
-[node name="StartWaveButton" type="Button" parent="BottomBar"]
+[node name="AutoStartButton" type="Button" parent="BottomBar"]
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
-text = "START INFECTION"
+text = "AUTO START: OFF"
 
 [node name="GameOverOverlay" type="Control" parent="."]
 visible = false

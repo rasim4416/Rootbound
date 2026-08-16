@@ -44,15 +44,9 @@ func _ready() -> void:
 	if plant_manager != null:
 		plant_manager.nanobot_selected.connect(_on_nanobot_selected)
 		plant_manager.nanobot_deselected.connect(_on_nanobot_deselected)
-		plant_manager.empty_cell_clicked.connect(_on_empty_cell_clicked)
 	if organel_manager != null:
 		organel_manager.organel_selected.connect(_on_organel_selected)
 		organel_manager.organel_deselected.connect(_on_organel_deselected)
-
-
-func _on_empty_cell_clicked(cell: Vector2i) -> void:
-	if shop_ui != null:
-		shop_ui.open_panel_for_cell(cell)
 
 
 func _resolve_level() -> LevelData:

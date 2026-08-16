@@ -1,7 +1,4 @@
-## Gameplay status HUD: resources, Core HP, wave status, Start Wave control.
-##
-## Lives under UILayer alongside ShopUI. Reads systems via signals — never mutates
-## ResourceManager / Core / WaveManager state except calling start_next_wave().
+## Gameplay status HUD: resources, Core HP, wave status, AutoStart toggle.
 class_name GameplayHUD
 extends Control
 
@@ -17,7 +14,7 @@ extends Control
 @onready var _wave_state_label: Label = $TopBar/CenterBox/WaveStateLabel
 @onready var _core_label: Label = $TopBar/RightBox/CoreLabel
 @onready var _core_bar: ProgressBar = $TopBar/RightBox/CoreBar
-@onready var _start_wave_button: Button = $BottomBar/StartWaveButton
+@onready var _auto_start_button: Button = $BottomBar/AutoStartButton
 @onready var _all_waves_label: Label = $BottomBar/AllWavesLabel
 @onready var _game_over_overlay: Control = $GameOverOverlay
 @onready var _restart_button: Button = $GameOverOverlay/Panel/VBox/RestartButton
@@ -32,7 +29,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_all_waves_label.visible = false
 	_game_over_overlay.visible = false
-	_start_wave_button.pressed.connect(_on_start_wave_pressed)
+	_auto_start_button.pressed.connect(_on_auto_start_pressed)
 	_restart_button.pressed.connect(_on_restart_pressed)
 	if has_node("%MenuButton"):
 		(%MenuButton as Button).pressed.connect(_on_menu_pressed)
@@ -64,7 +61,9 @@ func _ready() -> void:
 		wave_manager.wave_started.connect(_on_wave_started)
 		wave_manager.wave_completed.connect(_on_wave_completed)
 		wave_manager.all_waves_completed.connect(_on_all_waves_completed)
+		wave_manager.auto_start_enabled_changed.connect(_on_auto_start_changed)
 		_refresh_wave_ui()
+		_refresh_auto_start_button()
 	else:
 		push_error("GameplayHUD: wave_manager is not assigned.")
 
@@ -117,7 +116,7 @@ func _bind_level_up_controller() -> void:
 func show_game_over() -> void:
 	_is_game_over_ui = true
 	_game_over_overlay.visible = true
-	_start_wave_button.disabled = true
+	_auto_start_button.disabled = true
 	_all_waves_label.visible = false
 	if _upgrades_button != null:
 		_upgrades_button.visible = false
@@ -152,12 +151,17 @@ func _refresh_game_over_stats() -> void:
 		new_best.visible = wave > 0 and wave > _best_before_run
 
 
-func _on_start_wave_pressed() -> void:
+func _on_auto_start_pressed() -> void:
 	if _is_game_over_ui or (GameManager != null and GameManager.is_game_over()):
 		return
 	if wave_manager == null:
 		return
-	wave_manager.start_next_wave()
+	wave_manager.set_auto_start_enabled(not wave_manager.is_auto_start_enabled())
+
+
+func _on_auto_start_changed(_enabled: bool) -> void:
+	_refresh_auto_start_button()
+	_refresh_wave_ui()
 
 
 func _on_restart_pressed() -> void:
@@ -247,14 +251,19 @@ func _refresh_wave_ui() -> void:
 	_all_waves_label.visible = false
 
 	if _is_game_over_ui:
-		_start_wave_button.disabled = true
+		_auto_start_button.disabled = true
 		return
 
-	var can_start: bool = (
-		wave_manager.state == WaveManager.WaveState.IDLE
-		and wave_manager.has_waves_remaining()
-	)
-	_start_wave_button.disabled = not can_start
+	_auto_start_button.disabled = false
+
+
+func _refresh_auto_start_button() -> void:
+	if _auto_start_button == null or wave_manager == null:
+		return
+	if wave_manager.is_auto_start_enabled():
+		_auto_start_button.text = "AUTO START: ON"
+	else:
+		_auto_start_button.text = "AUTO START: OFF"
 
 
 func _get_resources() -> ResourceManager:

@@ -62,6 +62,31 @@ func purchase(item: ShopItem) -> bool:
 	return true
 
 
+## Purchases one unit and places it on a valid grid cell in one step.
+func try_purchase_and_place_at_cell(
+	item: ShopItem,
+	cell: Vector2i,
+	plant_manager: PlantManager,
+	organel_manager: OrganelManager
+) -> bool:
+	if item == null or not item.unlocked:
+		return false
+	if not can_purchase(item):
+		purchase_failed.emit(item)
+		return false
+	if not purchase(item):
+		return false
+
+	var placed: bool = false
+	if item.is_nanobot():
+		if plant_manager != null and item.plant_data != null:
+			placed = plant_manager.place_owned_at_cell(cell, item.plant_data)
+	elif item.is_organelle():
+		if organel_manager != null and item.organel_data != null:
+			placed = organel_manager.place_owned_at_cell(cell, item.organel_data)
+	return placed
+
+
 func get_shop_items() -> Array[ShopItem]:
 	return shop_items.duplicate()
 
