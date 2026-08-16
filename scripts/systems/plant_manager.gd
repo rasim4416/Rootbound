@@ -17,6 +17,8 @@ signal nanobot_selected(nanobot: Plant)
 signal nanobot_deselected
 ## Empty, in-bounds, unoccupied cell clicked with no Nanobot unit selected.
 signal empty_cell_clicked(cell: Vector2i)
+## Nanobot under the mouse cursor, or null when the cursor leaves every Nanobot.
+signal nanobot_hovered(nanobot: Plant)
 
 @export var grid: GridManager
 @export var plant_layer: Node2D
@@ -27,17 +29,57 @@ signal empty_cell_clicked(cell: Vector2i)
 const _DEFAULT_PLANT_SCENE: PackedScene = preload("res://scenes/plants/plant.tscn")
 
 var _selected_nanobot: Plant = null
+var _hovered_nanobot: Plant = null
 var _occupancy: Dictionary = {} ## Vector2i → Plant
 
 
 func _ready() -> void:
 	if plant_scene == null:
 		plant_scene = _DEFAULT_PLANT_SCENE
+	set_process(true)
 
 	if grid == null or plant_layer == null:
 		push_error("PlantManager: grid or plant_layer is null — check scene NodePath exports.")
 	if seed_selection == null:
 		push_error("PlantManager: seed_selection is null — check scene NodePath exports.")
+
+
+func _process(_delta: float) -> void:
+	_refresh_hover()
+
+
+## Tracked per frame so the range preview survives events consumed by the HUD.
+func _refresh_hover() -> void:
+	if grid == null:
+		_set_hovered(null)
+		return
+	if GameManager != null and GameManager.is_game_over():
+		_set_hovered(null)
+		return
+	if _is_path_dev_active() or _is_placement_drag_active():
+		_set_hovered(null)
+		return
+	var cell: Vector2i = grid.world_to_grid(grid.get_global_mouse_position())
+	if not grid.is_in_bounds(cell):
+		_set_hovered(null)
+		return
+	_set_hovered(_occupancy.get(cell, null) as Plant)
+
+
+func _set_hovered(nanobot: Plant) -> void:
+	var next: Plant = nanobot
+	if next != null and (not is_instance_valid(next) or not next.is_alive):
+		next = null
+	if _hovered_nanobot == next:
+		return
+	_hovered_nanobot = next
+	nanobot_hovered.emit(next)
+
+
+func get_hovered_nanobot() -> Plant:
+	if _hovered_nanobot != null and is_instance_valid(_hovered_nanobot) and _hovered_nanobot.is_alive:
+		return _hovered_nanobot
+	return null
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -120,7 +162,10 @@ func _try_select_or_open_fabricator(world_position: Vector2) -> bool:
 		return false
 
 	_clear_selection()
-	return false
+	if not grid.is_placeable(cell):
+		return false
+	empty_cell_clicked.emit(cell)
+	return true
 
 
 func _is_placement_drag_active() -> bool:
@@ -268,6 +313,8 @@ func _on_plant_exiting(cell: Vector2i, plant: Plant) -> void:
 			grid.mark_free(cell)
 	if _selected_nanobot == plant:
 		_clear_selection()
+	if _hovered_nanobot == plant:
+		_set_hovered(null)
 
 
 func _get_resources() -> ResourceManager:
