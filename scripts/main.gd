@@ -87,7 +87,8 @@ func _configure_core(level: LevelData) -> void:
 	var visual := core.get_node_or_null("Visual") as Node2D
 	if visual != null and primary != null and not primary.cells.is_empty():
 		var end_cell: Vector2i = primary.cells[primary.cells.size() - 1]
-		visual.global_position = grid.grid_to_world_center(end_cell)
+		# Slight left bias keeps the body on the path end and clear of right UI.
+		visual.global_position = grid.grid_to_world_center(end_cell) + Vector2(-10.0, 0.0)
 
 
 func _configure_path_visuals(level: LevelData) -> void:

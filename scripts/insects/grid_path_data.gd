@@ -1,13 +1,14 @@
 ## Ordered sequence of grid cells for pathogen movement.
 ##
-## Create .tres files under data/paths/. GridPathFollower walks cell centers;
+## Authoritative path data is always Vector2i grid coordinates.
+## World positions are derived via GridManager (cell_size / grid_origin).
 ## Path2D / PathFollower are legacy and unused for normal gameplay.
 class_name GridPathData
 extends Resource
 
 @export var path_id: StringName = &""
 
-## Ordered cells from membrane entry to Nucleus.
+## Ordered cells from membrane entry to Nucleus (orthogonal steps only).
 @export var cells: Array[Vector2i] = []
 
 
@@ -21,8 +22,8 @@ func get_cell(index: int) -> Vector2i:
 	return cells[index]
 
 
-## Validates bounds, no consecutive duplicates, and orthogonal adjacency.
-## Returns true when valid; otherwise pushes errors and returns false.
+## Validates bounds, no consecutive duplicates, and orthogonal adjacency
+## (manhattan distance == 1). Returns true when valid.
 func validate(grid: GridManager) -> bool:
 	if grid == null:
 		push_error("GridPathData '%s': GridManager is null." % path_id)
@@ -66,3 +67,23 @@ func get_cells_copy() -> Array[Vector2i]:
 	for cell: Vector2i in cells:
 		copy.append(cell)
 	return copy
+
+
+## World-space centers for each cell (global). Empty if grid is null.
+func get_world_centers(grid: GridManager) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	if grid == null:
+		return out
+	for cell: Vector2i in cells:
+		out.append(grid.grid_to_world_center(cell))
+	return out
+
+
+## Cell centers in `visual` local space (for PathVisual / draw helpers).
+func get_world_centers_local(visual: Node2D, grid: GridManager) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	if visual == null or grid == null:
+		return out
+	for cell: Vector2i in cells:
+		out.append(visual.to_local(grid.grid_to_world_center(cell)))
+	return out

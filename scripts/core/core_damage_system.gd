@@ -1,8 +1,8 @@
-## Bridges path leaks to Core / Nucleus damage.
+## Bridges path leaks to Nucleus damage.
 ##
 ## Listens to WaveManager.insect_spawned, hooks GridPathFollower.path_completed
-## (legacy PathFollower still supported), and applies InsectData.attack_damage
-## to the Core. Insects despawn without died (no Biomass).
+## (legacy PathFollower still supported), and applies pathogen attack_damage
+## to the Nucleus. Pathogens despawn without died (no Bio-Energy).
 class_name CoreDamageSystem
 extends Node
 
@@ -72,9 +72,9 @@ func _on_path_completed(insect: Insect) -> void:
 		push_error("CoreDamageSystem: core missing when applying damage.")
 	elif core.is_alive and amount > 0.0:
 		if debug_core_damage:
-			var insect_name: String = insect.data.display_name if insect.data != null else "Insect"
-			print("CoreDamageSystem: %s reached Core → Core -%.0f HP" % [insect_name, amount])
+			var insect_name: String = insect.data.display_name if insect.data != null else "Pathogen"
+			print("CoreDamageSystem: %s reached Nucleus → Nucleus -%.0f HP" % [insect_name, amount])
 		core.take_damage(amount)
 
-	# Leak removal: no died signal → no Biomass.
+	# Leak removal: no died signal → no Bio-Energy.
 	insect.despawn()

@@ -34,8 +34,6 @@ func _connect_ui() -> void:
 	ui.node_selected.connect(func(id: StringName) -> void:
 		_selected_id = id
 		_refresh()
-		if ui != null:
-			ui.focus_selected()
 	)
 	ui.catalog_changed.connect(_refresh_light)
 	ui.history_commit.connect(func() -> void:

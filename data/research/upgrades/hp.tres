@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ResearchData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="ResearchData" format=3]
 
 [ext_resource type="Script" path="res://scripts/research/research_data.gd" id="1_research"]
 [ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="2_cost"]
@@ -21,10 +21,8 @@ script = ExtResource("1_research")
 research_id = &"hp"
 display_name = "HP"
 description = "Permanent +15% Nanobot Max HP."
-costs = Array[ResearchCost]([SubResource("Cost_c")])
-unlocked_by_default = false
-permanent_modifiers = Array[StatModifier]([SubResource("Mod_hp")])
-editor_position = Vector2(1100, 140)
+costs = Array[ExtResource("2_cost")]([SubResource("Cost_c")])
+permanent_modifiers = Array[ExtResource("4_mod")]([SubResource("Mod_hp")])
+editor_position = Vector2(416.01257, 32.588623)
 prerequisite_ids = Array[StringName]([&"attacking_nanobot"])
 tier = 2
-unlockable = true

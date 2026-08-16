@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="ResearchData" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="ResearchData" format=3]
 
 [ext_resource type="Script" path="res://scripts/research/research_data.gd" id="1_research"]
 [ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="2_cost"]
 [ext_resource type="Resource" path="res://data/research/elements/hydrogen.tres" id="3_h"]
 [ext_resource type="Resource" path="res://data/research/elements/sulfur.tres" id="4_s"]
+[ext_resource type="Script" path="res://scripts/progression/stat_modifier.gd" id="5_1d11j"]
 [ext_resource type="Resource" path="res://data/research/elements/nitrogen.tres" id="5_n"]
 
 [sub_resource type="Resource" id="Cost_h"]
@@ -26,9 +27,7 @@ script = ExtResource("1_research")
 research_id = &"rotation_protein_research"
 display_name = "Rotation Protein"
 description = "Placeholder. Unlocks Rotation Protein research (behavior not implemented yet)."
-costs = Array[ResearchCost]([SubResource("Cost_h"), SubResource("Cost_s"), SubResource("Cost_n")])
-unlocked_by_default = false
-editor_position = Vector2(1100, 540)
+costs = Array[ExtResource("2_cost")]([SubResource("Cost_h"), SubResource("Cost_s"), SubResource("Cost_n")])
+editor_position = Vector2(706.6089, 758.4165)
 prerequisite_ids = Array[StringName]([&"ribosome"])
 tier = 3
-unlockable = true

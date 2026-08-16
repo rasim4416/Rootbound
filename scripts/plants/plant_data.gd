@@ -1,7 +1,9 @@
-## Data definition for a plant type.
+## Data definition for a Nanobot type (legacy class name: PlantData).
 ##
-## Create one .tres per plant under data/plants/. Runtime plant scenes should
+## Create one .tres per nanobot under data/plants/. Runtime nanobot scenes
 ## receive a PlantData instance rather than hard-coding stats.
+## Stable plant_id values (e.g. clover, thornbush) are legacy IDs — use
+## display_name for player-facing text.
 class_name PlantData
 extends Resource
 
@@ -13,7 +15,7 @@ enum PlantRole {
 	SPECIAL,
 }
 
-## Stable identifier for lookups, saves, and research unlocks.
+## Stable identifier for lookups, saves, and research unlocks (legacy IDs OK).
 @export var plant_id: StringName = &""
 
 @export var display_name: String = ""
@@ -23,7 +25,7 @@ enum PlantRole {
 @export var plant_role: PlantRole = PlantRole.DEFENDER
 
 @export_group("Economy")
-## Biomass spent to acquire a seed of this plant.
+## Bio-Energy spent to acquire one Nanobot unit of this type.
 @export var biomass_cost: int = 0
 
 @export_group("Installation")
@@ -35,7 +37,7 @@ enum PlantRole {
 @export var damage: float = 0.0
 @export var attack_range: float = 0.0
 @export var attack_cooldown: float = 0.0
-## World-space travel speed for this plant's projectiles (px/sec). 0 = use default.
+## World-space travel speed for this nanobot's projectiles (px/sec). 0 = use default.
 @export var projectile_speed: float = 0.0
 
 @export_group("Support")

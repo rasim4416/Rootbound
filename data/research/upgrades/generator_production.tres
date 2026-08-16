@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ResearchData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="ResearchData" format=3]
 
 [ext_resource type="Script" path="res://scripts/research/research_data.gd" id="1_research"]
 [ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="2_cost"]
@@ -13,7 +13,6 @@ amount = 10
 [sub_resource type="Resource" id="Mod_prod"]
 script = ExtResource("4_mod")
 stat_id = &"bio_energy_production_amount"
-modifier_type = 0
 value = 1.0
 
 [resource]
@@ -21,10 +20,8 @@ script = ExtResource("1_research")
 research_id = &"generator_production"
 display_name = "Production"
 description = "Generator Bio-Energy production +1 per tick."
-costs = Array[ResearchCost]([SubResource("Cost_c")])
-unlocked_by_default = false
-unlockable = true
-permanent_modifiers = Array[StatModifier]([SubResource("Mod_prod")])
-editor_position = Vector2(168, 316)
+costs = Array[ExtResource("2_cost")]([SubResource("Cost_c")])
+permanent_modifiers = Array[ExtResource("4_mod")]([SubResource("Mod_prod")])
+editor_position = Vector2(126.39026, 10.2164)
 prerequisite_ids = Array[StringName]([&"generator_nanobot"])
 tier = 2

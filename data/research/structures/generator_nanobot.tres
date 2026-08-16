@@ -1,16 +1,14 @@
-[gd_resource type="Resource" script_class="ResearchData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ResearchData" format=3]
 
+[ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="1_niikc"]
 [ext_resource type="Script" path="res://scripts/research/research_data.gd" id="1_research"]
+[ext_resource type="Script" path="res://scripts/progression/stat_modifier.gd" id="2_xbocq"]
 
 [resource]
 script = ExtResource("1_research")
 research_id = &"generator_nanobot"
 display_name = "Generator Nanobot"
 description = "Foundation Bio-Energy generation Nanobot branch."
-costs = Array[ResearchCost]([])
 unlocked_by_default = true
-unlockable = true
-permanent_modifiers = Array[StatModifier]([])
-editor_position = Vector2(280, 220)
+editor_position = Vector2(113.560974, 280.9631)
 prerequisite_ids = Array[StringName]([&"center"])
-tier = 1

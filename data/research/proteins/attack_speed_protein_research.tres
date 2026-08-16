@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="ResearchData" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="ResearchData" format=3]
 
 [ext_resource type="Script" path="res://scripts/research/research_data.gd" id="1_research"]
 [ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="2_cost"]
 [ext_resource type="Resource" path="res://data/research/elements/carbon.tres" id="3_c"]
 [ext_resource type="Resource" path="res://data/research/elements/nitrogen.tres" id="4_n"]
+[ext_resource type="Script" path="res://scripts/progression/stat_modifier.gd" id="5_arc6j"]
 [ext_resource type="Resource" path="res://data/research/elements/oxygen.tres" id="5_o"]
 
 [sub_resource type="Resource" id="Cost_c"]
@@ -26,9 +27,7 @@ script = ExtResource("1_research")
 research_id = &"attack_speed_protein_research"
 display_name = "Attack Speed Protein"
 description = "Placeholder. Unlocks Attack Speed Protein research (behavior not implemented yet)."
-costs = Array[ResearchCost]([SubResource("Cost_c"), SubResource("Cost_n"), SubResource("Cost_o")])
-unlocked_by_default = false
-editor_position = Vector2(1100, 380)
+costs = Array[ExtResource("2_cost")]([SubResource("Cost_c"), SubResource("Cost_n"), SubResource("Cost_o")])
+editor_position = Vector2(712.6425, 609.277)
 prerequisite_ids = Array[StringName]([&"ribosome"])
 tier = 3
-unlockable = true

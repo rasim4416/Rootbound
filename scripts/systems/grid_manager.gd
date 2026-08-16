@@ -8,7 +8,8 @@ extends Node2D
 signal occupancy_changed(cell: Vector2i, occupied: bool)
 
 @export_group("Grid")
-## Width and height of one cell in pixels.
+## Width and height of one cell in pixels (GRID_SIZE). Path visuals and
+## GridPathFollower derive all world positions from this + grid_origin.
 @export var cell_size: Vector2 = Vector2(64, 64):
 	set(value):
 		cell_size = value.max(Vector2(1, 1))
@@ -53,6 +54,11 @@ signal occupancy_changed(cell: Vector2i, occupied: bool)
 var _occupied_cells: Dictionary = {}
 ## Infection path cells — units cannot be placed here.
 var _path_cells: Dictionary = {}
+## Dev-editor placement gates (optional).
+var _slot_cells: Dictionary = {}
+var _blocked_cells: Dictionary = {}
+var _non_buildable_cells: Dictionary = {}
+var restrict_build_to_slots: bool = false
 
 
 func _ready() -> void:
@@ -115,7 +121,57 @@ func is_path_cell(cell: Vector2i) -> bool:
 
 ## True when a Nanobot / Organelle may be installed on this cell.
 func is_placeable(cell: Vector2i) -> bool:
-	return is_in_bounds(cell) and not is_occupied(cell) and not is_path_cell(cell)
+	if not is_in_bounds(cell):
+		return false
+	if is_occupied(cell) or is_path_cell(cell):
+		return false
+	if _blocked_cells.has(cell) or _non_buildable_cells.has(cell):
+		return false
+	if restrict_build_to_slots and not _slot_cells.has(cell):
+		return false
+	return true
+
+
+## Whether the cell is marked blocked (not walkable / not for paths).
+func is_blocked_cell(cell: Vector2i) -> bool:
+	return _blocked_cells.has(cell)
+
+
+## Whether the cell is an enabled turret slot.
+func is_slot_cell(cell: Vector2i) -> bool:
+	return _slot_cells.has(cell)
+
+
+## Applies Dev Editor placement rules from LevelData / EditorMapData.
+func apply_placement_rules(
+	slots: Array,
+	blocked: Dictionary,
+	non_buildable: Dictionary,
+	restrict_to_slots: bool
+) -> void:
+	_slot_cells.clear()
+	_blocked_cells.clear()
+	_non_buildable_cells.clear()
+	restrict_build_to_slots = restrict_to_slots
+	for s: Variant in slots:
+		var slot := s as EditorTurretSlot
+		if slot != null and slot.enabled:
+			_slot_cells[slot.cell] = true
+	for k: Variant in blocked.keys():
+		var parts: PackedStringArray = String(k).split(",")
+		if parts.size() == 2:
+			_blocked_cells[Vector2i(int(parts[0]), int(parts[1]))] = true
+	for k2: Variant in non_buildable.keys():
+		var parts2: PackedStringArray = String(k2).split(",")
+		if parts2.size() == 2:
+			_non_buildable_cells[Vector2i(int(parts2[0]), int(parts2[1]))] = true
+
+
+func clear_placement_rules() -> void:
+	_slot_cells.clear()
+	_blocked_cells.clear()
+	_non_buildable_cells.clear()
+	restrict_build_to_slots = false
 
 
 ## Marks every cell on the given paths as non-placeable (union of all paths).

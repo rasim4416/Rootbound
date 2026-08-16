@@ -18,6 +18,7 @@ var _area: Control
 var _nodes: Dictionary = {} ## StringName → ResearchGraphNode
 var _zoom: float = 1.0
 var _panning: bool = false
+var _left_panning: bool = false
 var _link_from: StringName = &""
 var _link_mouse: Vector2 = Vector2.ZERO
 var _selected_edge: Vector2i = Vector2i(-1, -1) ## packed as unused; use strings instead
@@ -31,6 +32,7 @@ var _context_is_edge: bool = false
 func _ready() -> void:
 	clip_contents = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	mouse_default_cursor_shape = Control.CURSOR_MOVE
 	_area = Control.new()
 	_area.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_area)
@@ -66,13 +68,20 @@ func _input(event: InputEvent) -> void:
 			if mb.pressed and not over:
 				return
 			_panning = mb.pressed
+			if not mb.pressed and not _left_panning:
+				mouse_default_cursor_shape = Control.CURSOR_MOVE
 			get_viewport().set_input_as_handled()
-		elif mb.button_index == MOUSE_BUTTON_LEFT and not mb.pressed and _link_from != &"":
-			var hit: StringName = _hit_input(_to_graph(get_local_mouse_position()))
-			if hit != &"":
-				_try_connect(_link_from, hit)
-			_link_from = &""
-			queue_redraw()
+		elif mb.button_index == MOUSE_BUTTON_LEFT and not mb.pressed:
+			if _left_panning:
+				_left_panning = false
+				_panning = false
+				mouse_default_cursor_shape = Control.CURSOR_MOVE
+			if _link_from != &"":
+				var hit: StringName = _hit_input(_to_graph(get_local_mouse_position()))
+				if hit != &"":
+					_try_connect(_link_from, hit)
+				_link_from = &""
+				queue_redraw()
 	elif event is InputEventMouseMotion and _panning:
 		var mm := event as InputEventMouseMotion
 		_area.position += mm.relative
@@ -221,15 +230,26 @@ func _gui_input(event: InputEvent) -> void:
 		var mb := event as InputEventMouseButton
 		if mb.button_index == MOUSE_BUTTON_LEFT:
 			if mb.pressed:
-				if not _try_select_edge(mb.position):
-					clear_edge_selection()
+				if _try_select_edge(mb.position):
+					accept_event()
+					return
+				clear_edge_selection()
+				_left_panning = true
+				_panning = true
+				mouse_default_cursor_shape = Control.CURSOR_DRAG
+				accept_event()
 			else:
+				if _left_panning:
+					_left_panning = false
+					_panning = false
+					mouse_default_cursor_shape = Control.CURSOR_MOVE
 				if _link_from != &"":
 					var hit: StringName = _hit_input(_to_graph(mb.position))
 					if hit != &"":
 						_try_connect(_link_from, hit)
 					_link_from = &""
 					queue_redraw()
+				accept_event()
 		elif mb.button_index == MOUSE_BUTTON_RIGHT and mb.pressed:
 			if _try_select_edge(mb.position):
 				_open_edge_context(mb.global_position)

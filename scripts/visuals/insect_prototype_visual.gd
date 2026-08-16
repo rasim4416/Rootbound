@@ -1,10 +1,18 @@
-## Builds stylized pathogen silhouettes under Insect/Visual.
+## Builds pathogen visuals under Insect/Visual.
 ## Driven by InsectData.visual_id — never by display names.
 class_name InsectPrototypeVisual
 extends RefCounted
 
 const VISUAL_BACTERIUM: StringName = &"bacterium"
 const VISUAL_VIRUS: StringName = &"virus"
+const BACTERIUM_SPRITE_PATH: String = "res://assets/gameplay/units/bacterium_idle.png"
+const VIRUS_SPRITE_PATH: String = "res://assets/gameplay/units/virus_idle.png"
+## Target on-grid size (matches nanobot body scale roughly).
+const BACTERIUM_BODY_SIZE: float = 48.0
+const VIRUS_BODY_SIZE: float = 52.0
+
+static var _bacterium_texture: Texture2D = null
+static var _virus_texture: Texture2D = null
 
 
 static func rebuild(visual_root: Node2D, visual_id: StringName) -> void:
@@ -24,6 +32,51 @@ static func rebuild(visual_root: Node2D, visual_id: StringName) -> void:
 
 
 static func _build_bacterium(visual_root: Node2D) -> void:
+	var tex: Texture2D = _get_bacterium_texture()
+	if tex != null:
+		_build_sprite(visual_root, "BacteriumSprite", tex, BACTERIUM_BODY_SIZE)
+		return
+	_build_bacterium_fallback(visual_root)
+
+
+static func _get_bacterium_texture() -> Texture2D:
+	if _bacterium_texture != null:
+		return _bacterium_texture
+	if not ResourceLoader.exists(BACTERIUM_SPRITE_PATH):
+		return null
+	_bacterium_texture = load(BACTERIUM_SPRITE_PATH) as Texture2D
+	return _bacterium_texture
+
+
+static func _get_virus_texture() -> Texture2D:
+	if _virus_texture != null:
+		return _virus_texture
+	if not ResourceLoader.exists(VIRUS_SPRITE_PATH):
+		return null
+	_virus_texture = load(VIRUS_SPRITE_PATH) as Texture2D
+	return _virus_texture
+
+
+static func _build_sprite(
+	visual_root: Node2D,
+	sprite_name: String,
+	texture: Texture2D,
+	body_size: float
+) -> void:
+	var sprite := Sprite2D.new()
+	sprite.name = sprite_name
+	sprite.texture = texture
+	sprite.centered = true
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var tex_size: Vector2 = texture.get_size()
+	var max_dim: float = maxf(tex_size.x, tex_size.y)
+	if max_dim > 0.0:
+		var scale_factor: float = body_size / max_dim
+		sprite.scale = Vector2(scale_factor, scale_factor)
+	visual_root.add_child(sprite)
+
+
+static func _build_bacterium_fallback(visual_root: Node2D) -> void:
 	var body := Polygon2D.new()
 	body.name = "Body"
 	body.color = Color(0.85, 0.25, 0.35, 1.0)
@@ -58,6 +111,14 @@ static func _build_bacterium(visual_root: Node2D) -> void:
 
 
 static func _build_virus(visual_root: Node2D) -> void:
+	var tex: Texture2D = _get_virus_texture()
+	if tex != null:
+		_build_sprite(visual_root, "VirusSprite", tex, VIRUS_BODY_SIZE)
+		return
+	_build_virus_fallback(visual_root)
+
+
+static func _build_virus_fallback(visual_root: Node2D) -> void:
 	var core := Polygon2D.new()
 	core.name = "Core"
 	core.color = Color(0.75, 0.20, 0.85, 1.0)

@@ -1,7 +1,7 @@
-## Scene-local insect target detection / selection.
+## Scene-local pathogen target detection / selection.
 ##
-## Scans InsectLayer for living Insect nodes. Combat systems (future) call into
-## this helper — plants and insects stay unaware of each other.
+## Scans InsectLayer for living Insect (pathogen) nodes. Combat systems call
+## into this helper — nanobots and pathogens stay decoupled.
 ##
 ## Modes live in [TargetingModes]; First / Last / Weakest / Strongest are gated
 ## behind the Targeting research (checked by the caller, e.g. Plant).

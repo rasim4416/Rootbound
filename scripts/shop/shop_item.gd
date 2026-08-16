@@ -1,6 +1,6 @@
 ## One entry in the Shop / Fabricator catalog.
 ##
-## Supports Nanobot seeds and Organelle units. Bio-Energy is always the purchase currency.
+## Supports Nanobot units and Organelle units. Bio-Energy is always the purchase currency.
 class_name ShopItem
 extends Resource
 
@@ -10,7 +10,7 @@ enum ItemKind {
 }
 
 @export var item_kind: ItemKind = ItemKind.NANOBOT
-## Plant granted as a seed when item_kind == NANOBOT.
+## Nanobot granted as an inventory unit when item_kind == NANOBOT (legacy: PlantData).
 @export var plant_data: PlantData
 ## Organelle granted as a unit when item_kind == ORGANELLE.
 @export var organel_data: OrganelData

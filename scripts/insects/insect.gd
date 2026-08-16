@@ -10,7 +10,7 @@ signal health_changed(current_health: float, max_health: float)
 ## Killer is the Plant/Nanobot that dealt the lethal hit, or null.
 signal died(killer: Plant)
 
-## Static definition for this insect type. Shared across instances; never mutate
+## Static definition for this pathogen type. Shared across instances; never mutate
 ## gameplay state on it.
 @export var data: InsectData:
 	set(value):
@@ -110,6 +110,7 @@ func take_damage(amount: float, attacker: Plant = null) -> void:
 
 	current_health = maxf(current_health - amount, 0.0)
 	_emit_health_changed()
+	_play_hit_flash()
 
 	if current_health <= 0.0:
 		last_attacker = attacker
@@ -128,18 +129,22 @@ func die() -> void:
 	_stop_path_followers()
 	var killer: Plant = last_attacker
 	died.emit(killer)
-	# Deferred so RewardManager / WaveManager finish handling `died` first.
-	call_deferred("queue_free")
+	# Presentation-only death anim; rewards already handled via `died`.
+	var death_delay: float = _play_death_visual()
+	if death_delay > 0.0 and is_inside_tree():
+		get_tree().create_timer(death_delay).timeout.connect(_queue_free_if_valid, CONNECT_ONE_SHOT)
+	else:
+		call_deferred("queue_free")
 
 
-## Removes the insect without combat death (no Biomass). Used when reaching Core.
+## Removes the pathogen without combat death (no Bio-Energy). Used when reaching Nucleus.
 func despawn() -> void:
 	if not is_instance_valid(self):
 		return
 	_stop_path_followers()
 	# Alive flag cleared so targeting ignores this node until free.
 	is_alive = false
-	# Do not emit died — RewardManager must not pay Biomass for leaks.
+	# Do not emit died — RewardManager must not pay Bio-Energy for leaks.
 	call_deferred("queue_free")
 
 
@@ -176,3 +181,23 @@ func _rebuild_prototype_visual() -> void:
 func _emit_health_changed() -> void:
 	var max_hp: float = get_max_health() if data != null else 0.0
 	health_changed.emit(current_health, max_hp)
+
+
+func _play_hit_flash() -> void:
+	if _visual != null and _visual.has_method("play_hit_flash"):
+		_visual.call("play_hit_flash")
+
+
+## Returns seconds to wait before queue_free (0 = free immediately).
+func _play_death_visual() -> float:
+	if _visual == null or not _visual.has_method("play_death"):
+		return 0.0
+	_visual.call("play_death")
+	if _visual.has_method("get_death_duration"):
+		return float(_visual.call("get_death_duration"))
+	return 0.28
+
+
+func _queue_free_if_valid() -> void:
+	if is_instance_valid(self):
+		queue_free()

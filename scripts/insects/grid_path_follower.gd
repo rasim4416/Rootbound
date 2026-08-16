@@ -1,7 +1,8 @@
 ## Moves a pathogen host Node2D from grid cell center to grid cell center.
 ##
-## Destination is always a GridPathData cell. Smooth lerp between centers;
-## snaps exactly on arrival to avoid drift. Emits path_completed once at the end.
+## Destination is always a GridPathData Vector2i cell. Linear lerp only along
+## orthogonal cell→cell segments (sharp 90° turns). Snaps on arrival.
+## Emits path_completed once at the end.
 class_name GridPathFollower
 extends Node
 
@@ -143,9 +144,13 @@ func _begin_segment(from_index: int) -> void:
 	progress = 0.0
 	_host.global_position = _from_world
 
+	# Orthogonal grid steps only → snap facing to 90° cardinals.
 	var dir: Vector2 = _to_world - _from_world
 	if dir.length_squared() > 0.0001:
-		_host.global_rotation = dir.angle()
+		if absf(dir.x) >= absf(dir.y):
+			_host.global_rotation = 0.0 if dir.x > 0.0 else PI
+		else:
+			_host.global_rotation = PI * 0.5 if dir.y > 0.0 else -PI * 0.5
 
 
 func _advance_or_finish() -> void:

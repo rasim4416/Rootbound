@@ -11,6 +11,11 @@ var fullscreen: bool = true
 
 func _ready() -> void:
 	load_settings()
+	# Deferred so the root Window exists when running from the editor.
+	call_deferred("_apply_settings_deferred")
+
+
+func _apply_settings_deferred() -> void:
 	apply_settings()
 
 
@@ -43,21 +48,26 @@ func apply_settings() -> void:
 	if window == null:
 		return
 	if fullscreen:
-		window.mode = Window.MODE_FULLSCREEN
+		# Exclusive fullscreen is more reliable on Windows than borderless MODE_FULLSCREEN.
+		window.mode = Window.MODE_EXCLUSIVE_FULLSCREEN
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
 	else:
 		window.mode = Window.MODE_WINDOWED
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 		window.size = DESIGN_SIZE
 		var screen_id: int = window.current_screen
 		var screen_size: Vector2i = DisplayServer.screen_get_size(screen_id)
 		window.position = Vector2i(
-			(screen_size.x - DESIGN_SIZE.x) / 2,
-			(screen_size.y - DESIGN_SIZE.y) / 2
+			int((screen_size.x - DESIGN_SIZE.x) / 2.0),
+			int((screen_size.y - DESIGN_SIZE.y) / 2.0)
 		)
 	settings_changed.emit()
 
 
 func set_fullscreen(enabled: bool) -> void:
 	if fullscreen == enabled:
+		# Re-apply in case OS/window state drifted (e.g. Alt+Enter).
+		apply_settings()
 		return
 	fullscreen = enabled
 	apply_settings()

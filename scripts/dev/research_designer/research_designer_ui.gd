@@ -298,7 +298,6 @@ func _on_list_selected(index: int) -> void:
 	if index < 0 or index >= _id_list.size():
 		return
 	node_selected.emit(_id_list[index])
-	focus_selected()
 
 
 func _refresh_list() -> void:

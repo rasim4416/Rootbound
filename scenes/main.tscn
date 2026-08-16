@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://c8k2m5n7p1q4r"]
+[gd_scene load_steps=47 format=3 uid="uid://c8k2m5n7p1q4r"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/systems/grid_manager.gd" id="2_grid"]
@@ -39,6 +39,11 @@
 [ext_resource type="Resource" path="res://data/progression/upgrades/support_bonus.tres" id="39_sup_bonus"]
 [ext_resource type="Resource" path="res://data/progression/upgrades/support_assist_xp.tres" id="40_sup_xp"]
 [ext_resource type="Script" path="res://scripts/systems/placement_drag_controller.gd" id="44_drag"]
+[ext_resource type="Script" path="res://scripts/dev/dev_editor.gd" id="45_dev_editor"]
+[ext_resource type="Script" path="res://scripts/dev/editor_overlay.gd" id="46_editor_overlay"]
+[ext_resource type="Script" path="res://scripts/dev/editor_ui.gd" id="47_editor_ui"]
+[ext_resource type="Script" path="res://scripts/dev/wave_designer/wave_designer.gd" id="48_wave_designer"]
+[ext_resource type="Script" path="res://scripts/dev/wave_designer/wave_designer_ui.gd" id="49_wave_designer_ui"]
 [ext_resource type="Script" path="res://scripts/dev/research_designer/research_designer.gd" id="50_research_designer"]
 [ext_resource type="Script" path="res://scripts/dev/research_designer/research_designer_ui.gd" id="51_research_designer_ui"]
 
@@ -60,8 +65,8 @@ cell_size = Vector2(64, 64)
 columns = 18
 rows = 10
 grid_origin = Vector2(0, 0)
-show_debug_grid = false
-debug_line_color = Color(1, 1, 1, 0.12)
+show_debug_grid = true
+debug_line_color = Color(1, 1, 1, 0.16)
 
 [node name="PlantingAreaVisual" type="Node2D" parent="Grid"]
 script = ExtResource("28_planting")
@@ -189,6 +194,32 @@ insect_layer = NodePath("../InsectLayer")
 gameplay_hud = NodePath("../UILayer/GameplayHUD")
 projectile_manager = NodePath("../ProjectileManager")
 level_up_controller = NodePath("../NanobotLevelUpController")
+
+[node name="EditorOverlay" type="Node2D" parent="."]
+z_index = 20
+visible = false
+script = ExtResource("46_editor_overlay")
+
+[node name="EditorUI" type="CanvasLayer" parent="."]
+script = ExtResource("47_editor_ui")
+
+[node name="DevEditor" type="Node" parent="." node_paths=PackedStringArray("grid", "wave_manager", "path_visual", "planting_visual", "core", "overlay", "ui")]
+script = ExtResource("45_dev_editor")
+grid = NodePath("../Grid")
+wave_manager = NodePath("../WaveManager")
+path_visual = NodePath("../Paths/PathVisual")
+planting_visual = NodePath("../Grid/PlantingAreaVisual")
+core = NodePath("../Core")
+overlay = NodePath("../EditorOverlay")
+ui = NodePath("../EditorUI")
+
+[node name="WaveDesignerUI" type="CanvasLayer" parent="."]
+script = ExtResource("49_wave_designer_ui")
+
+[node name="WaveDesigner" type="Node" parent="." node_paths=PackedStringArray("wave_manager", "ui")]
+script = ExtResource("48_wave_designer")
+wave_manager = NodePath("../WaveManager")
+ui = NodePath("../WaveDesignerUI")
 
 [node name="ResearchDesignerUI" type="CanvasLayer" parent="."]
 script = ExtResource("51_research_designer_ui")

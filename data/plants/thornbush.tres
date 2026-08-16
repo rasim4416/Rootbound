@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_plant_data")
 plant_id = &"thornbush"
-display_name = "Combat Nanobot"
-description = "A defensive nanobot that engages nearby pathogens."
+display_name = "Attacking Nanobot"
+description = "A combat nanobot that engages nearby pathogens."
 plant_role = 0
 biomass_cost = 15
 install_time = 5.0

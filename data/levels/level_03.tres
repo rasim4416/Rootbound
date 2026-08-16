@@ -1,10 +1,11 @@
-[gd_resource type="Resource" script_class="LevelData" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="LevelData" load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/level_data.gd" id="1_level"]
-[ext_resource type="Resource" path="res://data/paths/path_01.tres" id="2_path"]
-[ext_resource type="Resource" path="res://data/paths/path_02.tres" id="3_path2"]
-[ext_resource type="Resource" path="res://data/paths/path_03.tres" id="4_path3"]
+[ext_resource type="Resource" path="res://data/paths/path_l3_main.tres" id="2_path"]
+[ext_resource type="Resource" path="res://data/paths/path_l3_north.tres" id="3_path2"]
+[ext_resource type="Resource" path="res://data/paths/path_l3_south.tres" id="4_path3"]
 [ext_resource type="Resource" path="res://data/insects/ant.tres" id="5_enemy"]
+[ext_resource type="Resource" path="res://data/insects/virus.tres" id="5b_virus"]
 [ext_resource type="Resource" path="res://data/levels/default_wave_scaling.tres" id="6_scaling"]
 [ext_resource type="Script" path="res://scripts/levels/path_activation_rule.gd" id="7_rule"]
 
@@ -27,7 +28,7 @@ unlock_from_wave = 10
 script = ExtResource("1_level")
 level_id = &"level_03"
 display_name = "Level 3"
-description = "Higher baseline. Three infection channels — Path 2 from wave 5, Path 3 from wave 10."
+description = "Higher baseline. Center serpentine from wave 1; north rim @5; south rim @10."
 grid_columns = 18
 grid_rows = 10
 cell_size = Vector2(64, 64)
@@ -39,7 +40,7 @@ level_hp_multiplier = 2.0
 level_speed_multiplier = 1.3
 level_core_damage_multiplier = 1.5
 wave_scaling = ExtResource("6_scaling")
-enemy_pool = Array[InsectData]([ExtResource("5_enemy")])
+enemy_pool = Array[InsectData]([ExtResource("5_enemy"), ExtResource("5b_virus")])
 grid_path = ExtResource("2_path")
 path_rules = Array[PathActivationRule]([SubResource("Rule_p1"), SubResource("Rule_p2"), SubResource("Rule_p3")])
 difficulty = 3

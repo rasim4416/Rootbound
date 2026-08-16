@@ -1,16 +1,14 @@
-[gd_resource type="Resource" script_class="ResearchData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ResearchData" format=3]
 
+[ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="1_p7btt"]
 [ext_resource type="Script" path="res://scripts/research/research_data.gd" id="1_research"]
+[ext_resource type="Script" path="res://scripts/progression/stat_modifier.gd" id="2_3sxic"]
 
 [resource]
 script = ExtResource("1_research")
 research_id = &"support_nanobot"
 display_name = "Support Nanobot"
 description = "Support Nanobot research branch. Unlock requirements will be defined later."
-costs = Array[ResearchCost]([])
-unlocked_by_default = false
 unlockable = false
-permanent_modifiers = Array[StatModifier]([])
-editor_position = Vector2(280, 540)
+editor_position = Vector2(594.2797, 281.42883)
 prerequisite_ids = Array[StringName]([&"attacking_nanobot"])
-tier = 1

@@ -89,8 +89,8 @@ func _attack(target: Insect, damage: float) -> void:
 	attack_performed.emit(target, damage)
 
 	if debug_log_attacks:
-		var plant_name: String = _plant.data.display_name if _plant.data != null else "Plant"
-		var insect_name: String = target.data.display_name if target.data != null else "Insect"
+		var plant_name: String = _plant.data.display_name if _plant.data != null else "Nanobot"
+		var insect_name: String = target.data.display_name if target.data != null else "Pathogen"
 		print("AttackComponent: %s fired at %s" % [plant_name, insect_name])
 
 

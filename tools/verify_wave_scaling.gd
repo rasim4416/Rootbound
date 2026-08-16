@@ -32,8 +32,11 @@ func _verify_level_paths() -> bool:
 			push_error("%s primary path is %s (expected path_01)" % [path, all_paths[0].path_id])
 			return false
 		var pool: Array[InsectData] = level.get_enemy_pool()
-		if pool.size() != 1 or String(pool[0].insect_id) != "ant":
-			push_error("%s enemy pool must be Bacterium only" % path)
+		var ids: Array[String] = []
+		for insect: InsectData in pool:
+			ids.append(String(insect.insect_id))
+		if not ids.has("ant") or not ids.has("virus"):
+			push_error("%s enemy pool must include Bacterium + Virus (got %s)" % [path, str(ids)])
 			return false
 		var gen := WaveGenerator.new()
 		gen.configure(level)
@@ -41,7 +44,7 @@ func _verify_level_paths() -> bool:
 		if active.size() != 1 or String(active[0].path_id) != "path_01":
 			push_error("%s wave 50 active paths must be path_01 only" % path)
 			return false
-	print("paths: OK (all levels path_01 + Bacterium only)")
+	print("paths: OK (all levels + Bacterium/Virus pool)")
 	return true
 
 
@@ -76,6 +79,32 @@ func _verify_scaling_math() -> bool:
 		if job10.hp_multiplier <= job1.hp_multiplier:
 			push_error("L2 W10 HP mult must exceed L2 W1")
 			return false
+
+	# Target balancing formulas (w = wave number).
+	var expected_count_w1: int = int(round(8.0 + 2.0 * 0.0 + 0.03 * 0.0))
+	var expected_count_w20: int = int(round(8.0 + 2.0 * 19.0 + 0.03 * 19.0 * 19.0))
+	if scaling.get_enemy_count(1) != expected_count_w1:
+		push_error("W1 enemy count expected %d got %d" % [expected_count_w1, scaling.get_enemy_count(1)])
+		return false
+	if scaling.get_enemy_count(20) != expected_count_w20:
+		push_error("W20 enemy count expected %d got %d" % [expected_count_w20, scaling.get_enemy_count(20)])
+		return false
+	var i1: float = scaling.get_spawn_interval(1)
+	var i5: float = scaling.get_spawn_interval(5)
+	var i20: float = scaling.get_spawn_interval(20)
+	if absf(i1 - 1.0) > 0.001:
+		push_error("W1 spawn interval expected 1.0 got %.4f" % i1)
+		return false
+	if not (i5 < i1 and i20 < i5):
+		push_error("Spawn interval must keep falling (no min clamp)")
+		return false
+
+	print("waves 1-20 density:")
+	for w: int in range(1, 21):
+		print(
+			"  W%02d  enemies=%d  interval=%.3fs"
+			% [w, scaling.get_enemy_count(w), scaling.get_spawn_interval(w)]
+		)
 
 	print(
 		"scaling: OK (L1W1=%.1f L1W10=%.1f L1W50=%.1f L2W1=%.1f L2W10=%.1f)"
