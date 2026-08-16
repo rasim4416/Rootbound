@@ -8,20 +8,20 @@
 [sub_resource type="Resource" id="Cost_c"]
 script = ExtResource("1_cost")
 element = ExtResource("2_c")
-amount = 12
+amount = 14
 
-[sub_resource type="Resource" id="Mod_cost"]
+[sub_resource type="Resource" id="Mod_prod"]
 script = ExtResource("3_mod")
-stat_id = &"generator_shop_cost"
-value = -20.0
+stat_id = &"bio_energy_production_amount"
+value = 1.0
 
 [resource]
 script = ExtResource("4_research")
-research_id = &"molecular_economy"
-display_name = "Molecular Economy"
-description = "Generator Nanobot shop cost −20 Bio-Energy (stacks)."
+research_id = &"generator_output"
+display_name = "Output Amplification"
+description = "Generator Bio-Energy production +1 per interval (stacks)."
 costs = Array[ExtResource("1_cost")]([SubResource("Cost_c")])
-permanent_modifiers = Array[ExtResource("3_mod")]([SubResource("Mod_cost")])
-editor_position = Vector2(170.7302, 19.040253)
-prerequisite_ids = Array[StringName]([&"generator_cost"])
+permanent_modifiers = Array[ExtResource("3_mod")]([SubResource("Mod_prod")])
+editor_position = Vector2(-2.3587952, 15.599152)
+prerequisite_ids = Array[StringName]([&"generator_production"])
 tier = 2

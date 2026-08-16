@@ -1,14 +1,33 @@
 [gd_resource type="Resource" script_class="ResearchData" format=3]
 
-[ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="1_rqw35"]
-[ext_resource type="Script" path="res://scripts/progression/stat_modifier.gd" id="2_oqyvf"]
-[ext_resource type="Script" path="res://scripts/research/research_data.gd" id="3_t7p0b"]
+[ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="1_cost"]
+[ext_resource type="Resource" path="res://data/research/elements/carbon.tres" id="2_c"]
+[ext_resource type="Resource" path="res://data/research/elements/nitrogen.tres" id="3_n"]
+[ext_resource type="Script" path="res://scripts/progression/stat_modifier.gd" id="4_mod"]
+[ext_resource type="Script" path="res://scripts/research/research_data.gd" id="5_research"]
+
+[sub_resource type="Resource" id="Cost_c"]
+script = ExtResource("1_cost")
+element = ExtResource("2_c")
+amount = 18
+
+[sub_resource type="Resource" id="Cost_n"]
+script = ExtResource("1_cost")
+element = ExtResource("3_n")
+amount = 8
+
+[sub_resource type="Resource" id="Mod_cost"]
+script = ExtResource("4_mod")
+stat_id = &"generator_shop_cost"
+value = -40.0
 
 [resource]
-script = ExtResource("3_t7p0b")
+script = ExtResource("5_research")
 research_id = &"metabolic_efficiency"
 display_name = "Metabolic Efficiency"
-description = "Generator nanobot cost highly decreased."
+description = "Generator Nanobot shop cost −40 Bio-Energy (stacks)."
+costs = Array[ExtResource("1_cost")]([SubResource("Cost_c"), SubResource("Cost_n")])
+permanent_modifiers = Array[ExtResource("4_mod")]([SubResource("Mod_cost")])
 editor_position = Vector2(171.3493, -55.953568)
 prerequisite_ids = Array[StringName]([&"molecular_economy"])
 tier = 3

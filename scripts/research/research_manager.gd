@@ -160,6 +160,8 @@ func _apply_defaults() -> void:
 
 
 ## Rebuild PermanentProgressionManager modifiers from all unlocked research.
+## Each unlocked research contributes its modifiers; identical stats stack additively
+## (or multiplicatively) through StatCalculator.
 func _sync_permanent_effects() -> void:
 	var permanent: PermanentProgressionManager = _get_permanent()
 	if permanent == null:
@@ -169,6 +171,7 @@ func _sync_permanent_effects() -> void:
 		var data: ResearchData = get_research(research_id as StringName)
 		if data == null:
 			continue
+		var mod_index: int = 0
 		for mod: StatModifier in data.permanent_modifiers:
 			if mod == null or mod.stat_id == &"":
 				continue
@@ -176,9 +179,13 @@ func _sync_permanent_effects() -> void:
 				mod.stat_id,
 				mod.modifier_type,
 				mod.value,
-				StringName("research_%s_%s" % [String(data.research_id), String(mod.stat_id)])
+				StringName(
+					"research_%s_%s_%d"
+					% [String(data.research_id), String(mod.stat_id), mod_index]
+				)
 			)
 			permanent.add_modifier(applied)
+			mod_index += 1
 
 
 ## Reloads every ResearchData .tres under data/research (recursive).
