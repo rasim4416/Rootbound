@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ResearchData" format=3]
+
+[ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="1_rqw35"]
+[ext_resource type="Script" path="res://scripts/progression/stat_modifier.gd" id="2_oqyvf"]
+[ext_resource type="Script" path="res://scripts/research/research_data.gd" id="3_t7p0b"]
+
+[resource]
+script = ExtResource("3_t7p0b")
+research_id = &"metabolic_efficiency"
+display_name = "Metabolic Efficiency"
+description = "Generator nanobot cost highly decreased."
+editor_position = Vector2(171.3493, -55.953568)
+prerequisite_ids = Array[StringName]([&"molecular_economy"])
+tier = 3

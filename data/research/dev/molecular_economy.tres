@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ResearchData" format=3]
+
+[ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="1_blr5g"]
+[ext_resource type="Script" path="res://scripts/progression/stat_modifier.gd" id="2_w7a3r"]
+[ext_resource type="Script" path="res://scripts/research/research_data.gd" id="3_vrohk"]
+
+[resource]
+script = ExtResource("3_vrohk")
+research_id = &"molecular_economy"
+display_name = "Molecular Economy"
+description = "Generator nanobot cost is further decreased"
+editor_position = Vector2(170.7302, 19.040253)
+prerequisite_ids = Array[StringName]([&"generator_cost"])
+tier = 2

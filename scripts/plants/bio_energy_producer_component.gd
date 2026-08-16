@@ -151,8 +151,20 @@ func _grant_bio_energy() -> void:
 	if resources == null:
 		return
 	resources.add_biomass(amount)
+	var xp: float = _get_production_xp()
+	if xp > 0.0:
+		_plant.add_xp(xp)
 	if debug_bio_energy:
-		print("Generator #%d: +%d Bio-Energy" % [_plant.debug_id, amount])
+		print(
+			"Generator #%d: +%d Bio-Energy, +%.0f XP"
+			% [_plant.debug_id, amount, xp]
+		)
+
+
+func _get_production_xp() -> float:
+	if _plant == null or _plant.data == null:
+		return 0.0
+	return maxf(_plant.data.bio_energy_production_xp, 0.0)
 
 
 func _get_production_amount() -> int:

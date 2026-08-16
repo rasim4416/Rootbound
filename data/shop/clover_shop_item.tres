@@ -6,5 +6,5 @@
 [resource]
 script = ExtResource("1_shop_item")
 plant_data = ExtResource("2_clover")
-biomass_cost = 20
+biomass_cost = 200
 unlocked = true

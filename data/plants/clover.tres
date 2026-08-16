@@ -6,9 +6,9 @@
 script = ExtResource("1_plant_data")
 plant_id = &"clover"
 display_name = "Generator Nanobot"
-description = "Generates Bio-Energy while infection waves are active. Does not attack pathogens."
+description = "While a wave is active: every 10s grants +5 Bio-Energy and +10 XP. Idle between waves."
 plant_role = 1
-biomass_cost = 10
+biomass_cost = 200
 install_time = 5.0
 max_health = 100.0
 damage = 0.0
@@ -16,3 +16,4 @@ attack_range = 0.0
 attack_cooldown = 0.0
 bio_energy_production_amount = 5
 bio_energy_production_interval = 10.0
+bio_energy_production_xp = 10.0

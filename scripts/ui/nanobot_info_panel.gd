@@ -216,6 +216,23 @@ func _refresh_stats() -> void:
 		_add_stat("Assist XP", "%.0f" % _nanobot.get_effective_assist_xp_reward())
 		return
 
+	if _nanobot.data != null and _nanobot.data.is_resource_generator():
+		var amount: float = _nanobot.get_effective_stat(
+			StatIds.BIO_ENERGY_PRODUCTION_AMOUNT,
+			float(_nanobot.data.bio_energy_production_amount)
+		)
+		var interval: float = maxf(
+			_nanobot.get_effective_stat(
+				StatIds.BIO_ENERGY_PRODUCTION_INTERVAL,
+				_nanobot.data.bio_energy_production_interval
+			),
+			0.05
+		)
+		_add_stat("Production", "%.0f BE" % amount)
+		_add_stat("Interval", "%.0fs" % interval)
+		_add_stat("Tick XP", "%.0f" % _nanobot.data.bio_energy_production_xp)
+		return
+
 	var damage: float = 0.0
 	var range_v: float = 0.0
 	var shots_per_sec: float = 0.0

@@ -53,6 +53,8 @@ enum PlantRole {
 @export var bio_energy_production_amount: int = 0
 ## Seconds between Bio-Energy grants while a wave is active.
 @export var bio_energy_production_interval: float = 10.0
+## XP this Generator Nanobot gains on each successful production tick.
+@export var bio_energy_production_xp: float = 0.0
 
 @export_group("Runtime")
 ## Optional scene override for placement. Empty = PlantManager default plant scene.

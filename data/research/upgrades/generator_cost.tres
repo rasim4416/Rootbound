@@ -18,10 +18,9 @@ value = -5.0
 [resource]
 script = ExtResource("1_research")
 research_id = &"generator_cost"
-display_name = "Cost Modifier"
+display_name = "Efficient Assembly"
 description = "Generator Nanobot shop cost −5 Bio-Energy."
 costs = Array[ExtResource("2_cost")]([SubResource("Cost_c")])
 permanent_modifiers = Array[ExtResource("4_mod")]([SubResource("Mod_cost")])
-editor_position = Vector2(121.2316, 83.42996)
+editor_position = Vector2(170.81473, 92.40741)
 prerequisite_ids = Array[StringName]([&"generator_nanobot"])
-tier = 2

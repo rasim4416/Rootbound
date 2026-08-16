@@ -66,8 +66,9 @@ func _get_stat_line(item: ShopItem) -> String:
 	if item.is_nanobot() and item.plant_data != null:
 		var data: PlantData = item.plant_data
 		if data.is_resource_generator():
-			return "Produces %d Bio-Energy every %.0fs" % [
+			return "+%d Bio-Energy and +%.0f XP every %.0fs (wave only)" % [
 				data.bio_energy_production_amount,
+				data.bio_energy_production_xp,
 				data.bio_energy_production_interval,
 			]
 		if data.damage > 0.0:
