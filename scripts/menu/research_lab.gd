@@ -1,6 +1,9 @@
 ## Research Lab — icon tree with pan/drag navigation (no scrollbars).
 ## Unlock/economy logic stays on ResearchManager + ElementInventory.
+## Graph nodes spawn from the ResearchData catalog (same layout as F4).
 extends Control
+
+const _NODE_SCENE: PackedScene = preload("res://scenes/research/research_node.tscn")
 
 @onready var _back_button: Button = %BackButton
 @onready var _graph_viewport: Control = %GraphViewport
@@ -19,7 +22,7 @@ func _ready() -> void:
 	if _detail_panel != null:
 		_detail_panel.unlock_requested.connect(_on_unlock_requested)
 		_detail_panel.closed.connect(_on_detail_closed)
-	_bind_graph_nodes()
+	_spawn_graph_from_catalog()
 	_ensure_element_display()
 	if _connection_renderer != null:
 		_connection_renderer.graph_root = _graph_area
@@ -32,25 +35,43 @@ func _ready() -> void:
 		_on_node_selected(&"center")
 
 
-func _bind_graph_nodes() -> void:
+func _spawn_graph_from_catalog() -> void:
 	_nodes_by_id.clear()
 	if _graph_area == null:
 		return
 	for child: Node in _graph_area.get_children():
-		var node := child as ResearchNodeUI
+		if child is ResearchNodeUI:
+			_graph_area.remove_child(child)
+			child.queue_free()
+	var research: ResearchManager = null
+	if GameManager != null:
+		research = GameManager.get_research_manager()
+	if research == null:
+		return
+	for data: ResearchData in research.get_all_research():
+		if data == null or data.research_id == &"":
+			continue
+		var node: ResearchNodeUI = _NODE_SCENE.instantiate() as ResearchNodeUI
 		if node == null:
 			continue
-		if not node.node_selected.is_connected(_on_node_selected):
-			node.node_selected.connect(_on_node_selected)
-		if node.node_id != &"":
-			_nodes_by_id[node.node_id] = node
+		node.node_id = data.research_id
+		node.parent_node_ids = data.prerequisite_ids.duplicate()
+		node.fallback_display_name = data.display_name
+		node.node_type = ResearchNodeUI.NodeType.UPGRADE if data.tier >= 2 else ResearchNodeUI.NodeType.STRUCTURE
+		if data.tier >= 2:
+			node.tile_size = Vector2(48, 48)
+		else:
+			node.tile_size = Vector2(80, 80)
+		node.position = data.editor_position
+		node.node_selected.connect(_on_node_selected)
+		_graph_area.add_child(node)
+		_nodes_by_id[data.research_id] = node
 		node.refresh()
 
 
 func _center_graph_on_start() -> void:
 	if _graph_viewport == null or _graph_area == null:
 		return
-	# Nudge so Center node sits near the upper-middle of the viewport.
 	var viewport_size: Vector2 = _graph_viewport.size
 	if viewport_size.x < 8.0 or viewport_size.y < 8.0:
 		viewport_size = Vector2(900, 600)
@@ -103,22 +124,9 @@ func _on_node_selected(node_id: StringName) -> void:
 		if node != null:
 			node.set_selected(node.node_id == node_id)
 	if _detail_panel != null:
-		_detail_panel.show_research(node_id, _are_parents_unlocked(node_id))
-
-
-func _are_parents_unlocked(node_id: StringName) -> bool:
-	if GameManager == null:
-		return false
-	var research: ResearchManager = GameManager.get_research_manager()
-	if research == null:
-		return false
-	var node: ResearchNodeUI = _nodes_by_id.get(node_id, null) as ResearchNodeUI
-	if node == null:
-		return true
-	for parent_id: StringName in node.get_parent_node_ids():
-		if parent_id != &"" and not research.is_unlocked(parent_id):
-			return false
-	return true
+		var research: ResearchManager = GameManager.get_research_manager() if GameManager != null else null
+		var parents_ok: bool = research != null and research.prerequisites_met(node_id)
+		_detail_panel.show_research(node_id, parents_ok)
 
 
 func _on_detail_closed() -> void:
@@ -135,17 +143,10 @@ func _on_unlock_requested(node_id: StringName) -> void:
 	var research: ResearchManager = GameManager.get_research_manager()
 	if research == null:
 		return
-
-	var node: ResearchNodeUI = _nodes_by_id.get(node_id, null) as ResearchNodeUI
-	if node != null:
-		for parent_id: StringName in node.get_parent_node_ids():
-			if parent_id != &"" and not research.is_unlocked(parent_id):
-				return
-
 	if research.unlock(node_id):
 		_refresh_all_nodes()
 		if _detail_panel != null:
-			_detail_panel.show_research(node_id, _are_parents_unlocked(node_id))
+			_detail_panel.show_research(node_id, research.prerequisites_met(node_id))
 
 
 func _refresh_all_nodes() -> void:

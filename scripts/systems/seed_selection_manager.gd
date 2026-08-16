@@ -1,17 +1,18 @@
-## Tracks which seed type the player currently intends to plant.
+## Tracks which Nanobot type the player currently intends to place.
 ##
 ## Owns selection only — inventory counts live on ResourceManager, purchases on
 ## ShopManager, and placement on PlantManager.
+## Legacy name: SeedSelectionManager ("seed" = owned Nanobot unit).
 class_name SeedSelectionManager
 extends Node
 
-## Emitted whenever the selected seed type changes. Null when cleared.
+## Emitted whenever the selected Nanobot type changes. Null when cleared.
 signal selection_changed(plant_data: PlantData)
 
 var _selected_plant_data: PlantData = null
 
 
-## Selects a seed type if the player owns at least one of that plant's seeds.
+## Selects a Nanobot type if the player owns at least one unit of that type.
 func select_seed(plant_data: PlantData) -> bool:
 	if plant_data == null or plant_data.plant_id == &"":
 		return false
@@ -27,7 +28,7 @@ func select_seed(plant_data: PlantData) -> bool:
 	return true
 
 
-## Clears the current selection (e.g. after a successful plant).
+## Clears the current selection (e.g. after a successful placement).
 func clear_selection() -> void:
 	if _selected_plant_data == null:
 		return

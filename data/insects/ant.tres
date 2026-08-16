@@ -19,6 +19,7 @@ script = ExtResource("1_insect_data")
 insect_id = &"ant"
 display_name = "Bacterium"
 description = "A basic pathogen that invades toward the Nucleus."
+visual_id = &"bacterium"
 max_health = 50.0
 move_speed = 80.0
 attack_damage = 10.0

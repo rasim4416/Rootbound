@@ -1,7 +1,8 @@
-## Data definition for an insect type.
+## Data definition for a pathogen type (legacy class name: InsectData).
 ##
-## Create one .tres per insect under data/insects/. Runtime insect nodes should
+## Create one .tres per pathogen under data/insects/. Runtime pathogen nodes
 ## receive an InsectData instance rather than hard-coding stats.
+## Stable insect_id values (e.g. ant) are legacy IDs — use display_name in UI.
 class_name InsectData
 extends Resource
 
@@ -14,7 +15,7 @@ enum InsectRole {
 	SPECIAL,
 }
 
-## Stable identifier for lookups, waves, and saves.
+## Stable identifier for lookups, waves, and saves (legacy IDs OK).
 @export var insect_id: StringName = &""
 
 @export var display_name: String = ""
@@ -34,7 +35,7 @@ enum InsectRole {
 @export var attack_cooldown: float = 0.0
 
 @export_group("Rewards")
-## Bio-Energy granted when this insect dies (economy — not XP).
+## Bio-Energy granted when this pathogen dies (economy — not XP).
 @export var biomass_reward: int = 0
 ## XP granted to the Nanobot that scored the kill (instance progression).
 @export var xp_reward: float = 0.0
@@ -42,5 +43,5 @@ enum InsectRole {
 @export var assist_xp_reward: float = 10.0
 
 @export_group("Element Drops")
-## Permanent CHONS materials granted on death (not on Core leak / despawn).
+## Permanent CHONS materials granted on death (not on Nucleus leak / despawn).
 @export var element_drops: Array[ElementDrop] = []

@@ -1,16 +1,17 @@
 ## Central store for player progression resources.
 ##
-## Bio-Energy (biomass) buys Nanobots/Organelles.
+## Bio-Energy (internal field: biomass) buys Nanobots/Organelles.
 ## ATP is a separate Cell Energy pool produced by Mitochondria.
-## Seeds and organelle units are typed inventories.
+## Nanobot units and organelle units are typed inventories
+## (internal API still uses "seeds" for nanobot units).
 class_name ResourceManager
 extends Node
 
 signal biomass_changed(new_amount: int)
 signal atp_changed(new_amount: int)
-## Total seed count across all plant types (sum of typed inventory).
+## Total Nanobot unit count across all types (sum of typed inventory).
 signal seeds_changed(new_amount: int)
-## Fired when one plant type's seed count changes.
+## Fired when one Nanobot type's unit count changes.
 signal seed_count_changed(plant_id: StringName, new_amount: int)
 signal organelles_changed(new_amount: int)
 signal organelle_count_changed(organelle_id: StringName, new_amount: int)
@@ -20,7 +21,7 @@ var _atp: int = 0
 ## Sum of all entries in _seed_inventory. Kept for backwards-compatible HUD.
 var _seeds: int = 0
 var _organelles: int = 0
-## plant_id (StringName) → owned seed count.
+## plant_id (StringName) → owned Nanobot unit count.
 var _seed_inventory: Dictionary = {}
 ## organelle_id (StringName) → owned unit count.
 var _organelle_inventory: Dictionary = {}
@@ -48,7 +49,7 @@ var atp: int:
 		atp_changed.emit(_atp)
 
 
-## Total seeds owned across every plant type.
+## Total Nanobot units owned across every type.
 var seeds: int:
 	get:
 		return _seeds

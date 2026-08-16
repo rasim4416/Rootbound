@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="LevelData" load_steps=8 format=3]
+[gd_resource type="Resource" script_class="LevelData" load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/level_data.gd" id="1_level"]
-[ext_resource type="Resource" path="res://data/paths/path_01.tres" id="2_path"]
-[ext_resource type="Resource" path="res://data/paths/path_02.tres" id="3_path2"]
+[ext_resource type="Resource" path="res://data/paths/path_l2_main.tres" id="2_path"]
+[ext_resource type="Resource" path="res://data/paths/path_l2_alt.tres" id="3_path2"]
 [ext_resource type="Resource" path="res://data/insects/ant.tres" id="4_enemy"]
+[ext_resource type="Resource" path="res://data/insects/virus.tres" id="4b_virus"]
 [ext_resource type="Resource" path="res://data/levels/default_wave_scaling.tres" id="5_scaling"]
 [ext_resource type="Script" path="res://scripts/levels/path_activation_rule.gd" id="6_rule"]
 
@@ -21,7 +22,7 @@ unlock_from_wave = 5
 script = ExtResource("1_level")
 level_id = &"level_02"
 display_name = "Level 2"
-description = "Stronger baseline. Path 2 opens from wave 5 — Bacterium on both channels."
+description = "Stronger baseline. Southern bend opens from wave 1; northern dive from wave 5."
 grid_columns = 18
 grid_rows = 10
 cell_size = Vector2(64, 64)
@@ -33,7 +34,7 @@ level_hp_multiplier = 1.4
 level_speed_multiplier = 1.15
 level_core_damage_multiplier = 1.2
 wave_scaling = ExtResource("5_scaling")
-enemy_pool = Array[InsectData]([ExtResource("4_enemy")])
+enemy_pool = Array[InsectData]([ExtResource("4_enemy"), ExtResource("4b_virus")])
 grid_path = ExtResource("2_path")
 path_rules = Array[PathActivationRule]([SubResource("Rule_p1"), SubResource("Rule_p2")])
 difficulty = 2

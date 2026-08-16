@@ -1,22 +1,35 @@
-## Stylized biological cell interior (cytoplasm, membrane, organelles).
-## Presentation only — no gameplay ownership or grid occupancy.
+## Cell-interior backdrop: translucent navy cytoplasm + drifting motes.
+## Presentation only — no organelles, no gameplay / grid ownership.
 class_name MapBackground
 extends Node2D
 
 const MAP_SIZE := Vector2(1152, 648)
 
-const COLOR_OUTSIDE := Color(0.06, 0.08, 0.14, 1.0)
-const COLOR_CYTOPLASM := Color(0.12, 0.32, 0.38, 1.0)
-const COLOR_CYTO_A := Color(0.16, 0.42, 0.48, 0.35)
-const COLOR_CYTO_B := Color(0.10, 0.28, 0.36, 0.40)
-const COLOR_BUBBLE := Color(0.45, 0.78, 0.82, 0.18)
-const COLOR_MEMBRANE_OUTER := Color(0.35, 0.72, 0.78, 0.95)
-const COLOR_MEMBRANE_INNER := Color(0.55, 0.88, 0.90, 0.55)
-const COLOR_ENTRY := Color(0.95, 0.45, 0.55, 0.85)
+## Deep space outside the membrane.
+const COLOR_OUTSIDE := Color(0.03, 0.04, 0.10, 1.0)
+## Base cytoplasm — dark navy, slightly transparent feel over outside.
+const COLOR_CYTOPLASM := Color(0.06, 0.10, 0.22, 0.92)
+const COLOR_CYTO_GLOW_A := Color(0.12, 0.22, 0.48, 0.22)
+const COLOR_CYTO_GLOW_B := Color(0.08, 0.16, 0.38, 0.18)
+const COLOR_CYTO_GLOW_C := Color(0.10, 0.28, 0.52, 0.14)
+const COLOR_ENTRY := Color(0.55, 0.70, 1.0, 0.55)
+
+@export var particle_count: int = 48
+@export var particle_drift_speed: float = 12.0
+
+var _particles: Array[Dictionary] = []
+var _time: float = 0.0
+var _bounds: Rect2 = Rect2(Vector2(40, 40), MAP_SIZE - Vector2(80, 80))
 
 
 func _ready() -> void:
 	_build()
+	set_process(true)
+
+
+func _process(delta: float) -> void:
+	_time += delta
+	_update_particles(delta)
 
 
 func _build() -> void:
@@ -24,96 +37,147 @@ func _build() -> void:
 		var child: Node = get_child(0)
 		remove_child(child)
 		child.free()
+	_particles.clear()
 
-	# Space outside the cell.
 	_add_poly("Outside", _rect_poly(MAP_SIZE), COLOR_OUTSIDE, Vector2.ZERO)
+	# Squared cytoplasm — no organic blob / rounded blue frame.
+	_add_poly("Cytoplasm", _rect_poly(MAP_SIZE), COLOR_CYTOPLASM, Vector2.ZERO)
 
-	# Soft cytoplasm fill (slightly organic inset).
-	_add_poly("Cytoplasm", _organic_cell_poly(), COLOR_CYTOPLASM, Vector2.ZERO)
-
+	# Soft translucent navy washes (cytoplasm depth, not organelles).
 	_add_poly(
-		"CytoPatchA",
+		"CytoGlowA",
 		PackedVector2Array([
-			Vector2(120, 80), Vector2(340, 60), Vector2(400, 180),
-			Vector2(260, 240), Vector2(100, 160),
+			Vector2(80, 60), Vector2(360, 40), Vector2(420, 200),
+			Vector2(240, 280), Vector2(60, 180),
 		]),
-		COLOR_CYTO_A,
+		COLOR_CYTO_GLOW_A,
 		Vector2.ZERO
 	)
 	_add_poly(
-		"CytoPatchB",
+		"CytoGlowB",
 		PackedVector2Array([
-			Vector2(720, 420), Vector2(980, 400), Vector2(1040, 540),
-			Vector2(820, 580), Vector2(700, 500),
+			Vector2(680, 380), Vector2(980, 360), Vector2(1060, 520),
+			Vector2(820, 580), Vector2(660, 480),
 		]),
-		COLOR_CYTO_B,
+		COLOR_CYTO_GLOW_B,
 		Vector2.ZERO
 	)
 	_add_poly(
-		"CytoPatchC",
+		"CytoGlowC",
 		PackedVector2Array([
-			Vector2(480, 80), Vector2(700, 100), Vector2(740, 220),
-			Vector2(560, 200), Vector2(460, 140),
+			Vector2(420, 120), Vector2(720, 90), Vector2(780, 240),
+			Vector2(560, 280), Vector2(400, 200),
 		]),
-		COLOR_CYTO_A,
+		COLOR_CYTO_GLOW_C,
+		Vector2.ZERO
+	)
+	_add_poly(
+		"CytoGlowD",
+		PackedVector2Array([
+			Vector2(180, 420), Vector2(380, 400), Vector2(420, 560),
+			Vector2(200, 580), Vector2(120, 500),
+		]),
+		Color(0.14, 0.24, 0.55, 0.12),
 		Vector2.ZERO
 	)
 
-	# Static "vesicle" bubbles — few nodes only.
-	_add_bubble(Vector2(180, 120), 18.0)
-	_add_bubble(Vector2(420, 520), 14.0)
-	_add_bubble(Vector2(900, 100), 20.0)
-	_add_bubble(Vector2(640, 560), 12.0)
-	_add_bubble(Vector2(250, 480), 10.0)
+	# Subtle vignette discs (soft depth).
+	_add_poly("DepthSoftA", _circle_poly(160.0, 18), Color(0.05, 0.12, 0.35, 0.10), Vector2(200, 180))
+	_add_poly("DepthSoftB", _circle_poly(200.0, 18), Color(0.08, 0.18, 0.42, 0.08), Vector2(900, 420))
+	_add_poly("DepthSoftC", _circle_poly(140.0, 16), Color(0.10, 0.26, 0.50, 0.09), Vector2(600, 300))
 
-	_add_membrane()
 	_add_entry_pore(Vector2(32, 352))
-	_add_organelles()
+	_spawn_particles()
 
 
-func _organic_cell_poly() -> PackedVector2Array:
-	# Rounded playable interior — reads as cell body, not a hard rectangle.
-	return PackedVector2Array([
-		Vector2(36, 48), Vector2(200, 20), Vector2(560, 16), Vector2(920, 24),
-		Vector2(1116, 56), Vector2(1136, 180), Vector2(1140, 340), Vector2(1128, 500),
-		Vector2(1100, 600), Vector2(880, 632), Vector2(560, 636), Vector2(240, 624),
-		Vector2(48, 580), Vector2(16, 420), Vector2(12, 240), Vector2(24, 100),
-	])
+func _spawn_particles() -> void:
+	var root := Node2D.new()
+	root.name = "CytoplasmParticles"
+	add_child(root)
+
+	for i: int in range(maxi(particle_count, 1)):
+		var radius: float = randf_range(1.6, 5.5)
+		var alpha: float = randf_range(0.12, 0.38)
+		var tint := Color(
+			randf_range(0.35, 0.65),
+			randf_range(0.55, 0.85),
+			randf_range(0.90, 1.0),
+			alpha
+		)
+		var disc := Polygon2D.new()
+		disc.name = "Mote_%d" % i
+		disc.polygon = _circle_poly(radius, 8)
+		disc.color = tint
+		# Soft halo child
+		var halo := Polygon2D.new()
+		halo.name = "Halo"
+		halo.polygon = _circle_poly(radius * 2.4, 8)
+		halo.color = Color(tint.r, tint.g, tint.b, alpha * 0.35)
+		disc.add_child(halo)
+
+		var pos := Vector2(
+			randf_range(_bounds.position.x, _bounds.end.x),
+			randf_range(_bounds.position.y, _bounds.end.y)
+		)
+		disc.position = pos
+		root.add_child(disc)
+
+		_particles.append({
+			"node": disc,
+			"base_pos": pos,
+			"vel": Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)).normalized()
+				* randf_range(particle_drift_speed * 0.35, particle_drift_speed),
+			"phase": randf() * TAU,
+			"bob_amp": randf_range(4.0, 14.0),
+			"bob_speed": randf_range(0.4, 1.1),
+			"pulse_speed": randf_range(1.2, 2.8),
+			"base_scale": randf_range(0.75, 1.25),
+		})
 
 
-func _add_membrane() -> void:
-	var rim: PackedVector2Array = _organic_cell_poly()
-	# Close the loop for Line2D.
-	var closed := PackedVector2Array(rim)
-	closed.append(rim[0])
+func _update_particles(delta: float) -> void:
+	for entry: Dictionary in _particles:
+		var disc: Polygon2D = entry.get("node", null) as Polygon2D
+		if disc == null or not is_instance_valid(disc):
+			continue
 
-	var outer := Line2D.new()
-	outer.name = "MembraneOuter"
-	outer.points = closed
-	outer.width = 14.0
-	outer.default_color = COLOR_MEMBRANE_OUTER
-	outer.antialiased = true
-	outer.joint_mode = Line2D.LINE_JOINT_ROUND
-	outer.begin_cap_mode = Line2D.LINE_CAP_ROUND
-	outer.end_cap_mode = Line2D.LINE_CAP_ROUND
-	add_child(outer)
+		var vel: Vector2 = entry.get("vel", Vector2.ZERO) as Vector2
+		var base: Vector2 = entry.get("base_pos", disc.position) as Vector2
+		base += vel * delta
 
-	var inner := Line2D.new()
-	inner.name = "MembraneInner"
-	inner.points = closed
-	inner.width = 5.0
-	inner.default_color = COLOR_MEMBRANE_INNER
-	inner.antialiased = true
-	inner.joint_mode = Line2D.LINE_JOINT_ROUND
-	add_child(inner)
+		# Wrap softly inside cytoplasm bounds.
+		if base.x < _bounds.position.x:
+			base.x = _bounds.end.x
+		elif base.x > _bounds.end.x:
+			base.x = _bounds.position.x
+		if base.y < _bounds.position.y:
+			base.y = _bounds.end.y
+		elif base.y > _bounds.end.y:
+			base.y = _bounds.position.y
+
+		entry["base_pos"] = base
+
+		var phase: float = float(entry.get("phase", 0.0))
+		var bob_amp: float = float(entry.get("bob_amp", 8.0))
+		var bob_speed: float = float(entry.get("bob_speed", 0.7))
+		var pulse_speed: float = float(entry.get("pulse_speed", 1.8))
+		var base_scale: float = float(entry.get("base_scale", 1.0))
+
+		var bob := Vector2(
+			sin(_time * bob_speed + phase) * bob_amp * 0.45,
+			cos(_time * bob_speed * 0.85 + phase * 1.3) * bob_amp
+		)
+		disc.position = base + bob
+
+		var pulse: float = 0.85 + 0.15 * sin(_time * pulse_speed + phase)
+		disc.scale = Vector2.ONE * (base_scale * pulse)
 
 
 func _add_entry_pore(at: Vector2) -> void:
-	# Visual breach where pathogens enter — not a collider.
 	_add_poly(
 		"EntryGlow",
-		_circle_poly(22.0, 10),
-		Color(0.95, 0.40, 0.55, 0.35),
+		_circle_poly(24.0, 12),
+		Color(0.40, 0.55, 1.0, 0.22),
 		at
 	)
 	_add_poly(
@@ -122,87 +186,6 @@ func _add_entry_pore(at: Vector2) -> void:
 		COLOR_ENTRY,
 		at
 	)
-
-
-func _add_organelles() -> void:
-	# Kept clear of the infection corridor; visual-only (no grid occupancy).
-	_mitochondrion(Vector2(140, 90), 0.3)
-	_mitochondrion(Vector2(980, 520), -0.5)
-	_mitochondrion(Vector2(200, 540), 1.1)
-
-	_golgi(Vector2(720, 90))
-	_lysosome(Vector2(480, 560))
-
-	_ribosome(Vector2(360, 70))
-	_ribosome(Vector2(860, 560))
-	_ribosome(Vector2(100, 400))
-	_ribosome(Vector2(1040, 180))
-	_ribosome(Vector2(600, 60))
-	_ribosome(Vector2(300, 580))
-
-	_er_hint(Vector2(900, 80))
-
-
-func _mitochondrion(at: Vector2, rotation_rad: float) -> void:
-	var body := _add_poly(
-		"Mitochondrion",
-		PackedVector2Array([
-			Vector2(-28, -10), Vector2(-18, -16), Vector2(18, -16), Vector2(28, -8),
-			Vector2(28, 8), Vector2(18, 16), Vector2(-18, 16), Vector2(-28, 8),
-		]),
-		Color(0.85, 0.45, 0.35, 0.85),
-		at
-	)
-	body.rotation = rotation_rad
-	var inner := _add_poly(
-		"MitoCristae",
-		PackedVector2Array([
-			Vector2(-16, -4), Vector2(-4, 4), Vector2(4, -4), Vector2(16, 4),
-		]),
-		Color(0.95, 0.65, 0.40, 0.7),
-		at
-	)
-	inner.rotation = rotation_rad
-
-
-func _golgi(at: Vector2) -> void:
-	for i: int in range(4):
-		var y: float = float(i) * 8.0 - 12.0
-		var w: float = 22.0 + float(i) * 4.0
-		_add_poly(
-			"GolgiCistern",
-			PackedVector2Array([
-				Vector2(-w, y - 3.0), Vector2(w, y - 3.0),
-				Vector2(w + 4.0, y + 3.0), Vector2(-w - 4.0, y + 3.0),
-			]),
-			Color(0.75, 0.55, 0.85, 0.75 - float(i) * 0.08),
-			at
-		)
-
-
-func _lysosome(at: Vector2) -> void:
-	_add_poly("Lysosome", _circle_poly(16.0, 10), Color(0.55, 0.35, 0.75, 0.8), at)
-	_add_poly("LysosomeCore", _circle_poly(7.0, 8), Color(0.75, 0.45, 0.90, 0.9), at)
-
-
-func _ribosome(at: Vector2) -> void:
-	_add_poly("Ribosome", _circle_poly(5.0, 6), Color(0.40, 0.70, 0.55, 0.75), at)
-
-
-func _er_hint(at: Vector2) -> void:
-	_add_poly(
-		"ER",
-		PackedVector2Array([
-			Vector2(-40, -6), Vector2(-20, -14), Vector2(0, -6), Vector2(20, -14),
-			Vector2(40, -4), Vector2(20, 4), Vector2(0, -2), Vector2(-20, 6), Vector2(-40, 2),
-		]),
-		Color(0.50, 0.70, 0.85, 0.35),
-		at
-	)
-
-
-func _add_bubble(at: Vector2, radius: float) -> void:
-	_add_poly("Bubble", _circle_poly(radius, 8), COLOR_BUBBLE, at)
 
 
 func _add_poly(
@@ -238,7 +221,6 @@ func _circle_poly(radius: float, segments: int) -> PackedVector2Array:
 
 
 func _ringish_poly(outer_r: float, inner_r: float, segments: int) -> PackedVector2Array:
-	# Simple crescent-ish entry marker (not a true ring mesh).
 	var out := PackedVector2Array()
 	for i: int in range(segments):
 		var t: float = float(i) / float(segments - 1)

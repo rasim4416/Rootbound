@@ -35,7 +35,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_ALL
 	_apply_square_size()
-	_portrait = ResearchPortraits.get_portrait(node_id)
+	_load_portrait()
 	_refresh_from_manager()
 	gui_input.connect(_on_gui_input)
 	if GameManager != null:
@@ -53,7 +53,15 @@ func get_node_id() -> StringName:
 
 
 func get_parent_node_ids() -> Array[StringName]:
-	return parent_node_ids.duplicate()
+	if not parent_node_ids.is_empty():
+		return parent_node_ids.duplicate()
+	if GameManager != null:
+		var research: ResearchManager = GameManager.get_research_manager()
+		if research != null:
+			var data: ResearchData = research.get_research(node_id)
+			if data != null:
+				return data.prerequisite_ids.duplicate()
+	return []
 
 
 func get_center_local() -> Vector2:
@@ -79,7 +87,20 @@ func get_visual_state() -> VisualState:
 	return _visual_state
 
 
+func _load_portrait() -> void:
+	_portrait = null
+	if GameManager != null:
+		var research: ResearchManager = GameManager.get_research_manager()
+		if research != null:
+			var data: ResearchData = research.get_research(node_id)
+			if data != null:
+				_portrait = data.resolve_icon()
+	if _portrait == null:
+		_portrait = ResearchPortraits.get_portrait(node_id)
+
+
 func refresh() -> void:
+	_load_portrait()
 	_refresh_from_manager()
 
 
@@ -133,7 +154,7 @@ func _compute_state(research: ResearchManager) -> VisualState:
 		return VisualState.LOCKED
 	if not data.unlockable:
 		return VisualState.LOCKED
-	for parent_id: StringName in parent_node_ids:
+	for parent_id: StringName in get_parent_node_ids():
 		if parent_id == &"":
 			continue
 		if not research.is_unlocked(parent_id):

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="ResearchData" format=3]
+
+[ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="1_085d3"]
+[ext_resource type="Script" path="res://scripts/progression/stat_modifier.gd" id="2_4asm8"]
+[ext_resource type="Resource" path="res://data/research/elements/carbon.tres" id="2_yscx3"]
+[ext_resource type="Resource" path="res://data/research/elements/oxygen.tres" id="3_p2smn"]
+[ext_resource type="Script" path="res://scripts/research/research_data.gd" id="3_yscx3"]
+
+[sub_resource type="Resource" id="Resource_41v43"]
+script = ExtResource("1_085d3")
+element = ExtResource("2_yscx3")
+amount = 10
+
+[sub_resource type="Resource" id="Resource_uwnwo"]
+script = ExtResource("1_085d3")
+element = ExtResource("3_p2smn")
+amount = 40
+
+[resource]
+script = ExtResource("3_yscx3")
+research_id = &"selective_membrane"
+display_name = "Selective Membrane"
+description = "Increase selectiveness of the inner membrane.
++10 Base HP"
+costs = Array[ExtResource("1_085d3")]([SubResource("Resource_41v43"), SubResource("Resource_uwnwo")])
+editor_position = Vector2(115.921326, 646.57776)
+prerequisite_ids = Array[StringName]([&"inner_membrane"])

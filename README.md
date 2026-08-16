@@ -20,7 +20,7 @@ Nanobots defend the Nucleus against pathogen waves on a shared grid map. Meta pr
 |------|---------|
 | `scenes/` | Main menu, gameplay, UI, units |
 | `scripts/` | Game logic, managers, progression |
-| `data/` | Levels, plants, insects, research, shop |
+| `data/` | Levels, nanobots, pathogens, research, shop |
 | `assets/` | Textures (research portraits, gameplay sprites) |
 | `resources/` | UI StyleBoxes |
 

@@ -36,3 +36,25 @@ const BIO_ENERGY_PRODUCTION_AMOUNT: StringName = &"bio_energy_production_amount"
 const BIO_ENERGY_PRODUCTION_INTERVAL: StringName = &"bio_energy_production_interval"
 ## Flat shop Bio-Energy discount for Generator Nanobot purchases.
 const GENERATOR_SHOP_COST: StringName = &"generator_shop_cost"
+
+
+static func all_ids() -> Array[StringName]:
+	var ids: Array[StringName] = []
+	var script: Script = load("res://scripts/progression/stat_ids.gd") as Script
+	if script == null:
+		return ids
+	var constants: Dictionary = script.get_script_constant_map()
+	for key: Variant in constants.keys():
+		var value: Variant = constants[key]
+		if value is StringName:
+			ids.append(value as StringName)
+	ids.sort_custom(func(a: StringName, b: StringName) -> bool:
+		return String(a) < String(b)
+	)
+	return ids
+
+
+static func is_known(stat_id: StringName) -> bool:
+	if stat_id == &"":
+		return false
+	return all_ids().has(stat_id)

@@ -1,13 +1,13 @@
-## Scene-local plant placement and Nanobot selection coordinator.
+## Scene-local Nanobot placement and selection coordinator.
 ##
-## Placement flow (left click with seed selected):
-## 1. Require a selected seed from SeedSelectionManager.
-## 2. Require at least one owned seed of that PlantData.
-## 3. Convert mouse → grid cell; reject OOB / occupied (no seed spent).
-## 4. Spend one typed seed, spawn Plant, mark occupied, start installation.
-## 5. Clear seed selection on success.
+## Placement flow (left click with a Nanobot unit selected):
+## 1. Require a selected type from SeedSelectionManager.
+## 2. Require at least one owned unit of that PlantData.
+## 3. Convert mouse → grid cell; reject OOB / occupied (no unit spent).
+## 4. Spend one typed unit, spawn Plant (Nanobot), mark occupied, start installation.
+## 5. Clear selection on success.
 ##
-## Selection flow (left click with no seed selected):
+## Selection flow (left click with no unit selected):
 ## Click an occupied Nanobot cell to inspect it.
 ## Click an empty in-bounds cell to open the Fabricator side panel.
 class_name PlantManager
@@ -15,8 +15,10 @@ extends Node
 
 signal nanobot_selected(nanobot: Plant)
 signal nanobot_deselected
-## Empty, in-bounds, unoccupied cell clicked with no seed selected.
+## Empty, in-bounds, unoccupied cell clicked with no Nanobot unit selected.
 signal empty_cell_clicked(cell: Vector2i)
+## Nanobot under the mouse cursor, or null when the cursor leaves every Nanobot.
+signal nanobot_hovered(nanobot: Plant)
 
 @export var grid: GridManager
 @export var plant_layer: Node2D
@@ -27,12 +29,14 @@ signal empty_cell_clicked(cell: Vector2i)
 const _DEFAULT_PLANT_SCENE: PackedScene = preload("res://scenes/plants/plant.tscn")
 
 var _selected_nanobot: Plant = null
+var _hovered_nanobot: Plant = null
 var _occupancy: Dictionary = {} ## Vector2i → Plant
 
 
 func _ready() -> void:
 	if plant_scene == null:
 		plant_scene = _DEFAULT_PLANT_SCENE
+	set_process(true)
 
 	if grid == null or plant_layer == null:
 		push_error("PlantManager: grid or plant_layer is null — check scene NodePath exports.")
@@ -40,8 +44,48 @@ func _ready() -> void:
 		push_error("PlantManager: seed_selection is null — check scene NodePath exports.")
 
 
+func _process(_delta: float) -> void:
+	_refresh_hover()
+
+
+## Tracked per frame so the range preview survives events consumed by the HUD.
+func _refresh_hover() -> void:
+	if grid == null:
+		_set_hovered(null)
+		return
+	if GameManager != null and GameManager.is_game_over():
+		_set_hovered(null)
+		return
+	if _is_path_dev_active() or _is_placement_drag_active():
+		_set_hovered(null)
+		return
+	var cell: Vector2i = grid.world_to_grid(grid.get_global_mouse_position())
+	if not grid.is_in_bounds(cell):
+		_set_hovered(null)
+		return
+	_set_hovered(_occupancy.get(cell, null) as Plant)
+
+
+func _set_hovered(nanobot: Plant) -> void:
+	var next: Plant = nanobot
+	if next != null and (not is_instance_valid(next) or not next.is_alive):
+		next = null
+	if _hovered_nanobot == next:
+		return
+	_hovered_nanobot = next
+	nanobot_hovered.emit(next)
+
+
+func get_hovered_nanobot() -> Plant:
+	if _hovered_nanobot != null and is_instance_valid(_hovered_nanobot) and _hovered_nanobot.is_alive:
+		return _hovered_nanobot
+	return null
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if GameManager != null and GameManager.is_game_over():
+		return
+	if _is_path_dev_active():
 		return
 	if _is_placement_drag_active():
 		return
@@ -118,7 +162,10 @@ func _try_select_or_open_fabricator(world_position: Vector2) -> bool:
 		return false
 
 	_clear_selection()
-	return false
+	if not grid.is_placeable(cell):
+		return false
+	empty_cell_clicked.emit(cell)
+	return true
 
 
 func _is_placement_drag_active() -> bool:
@@ -129,6 +176,62 @@ func _is_placement_drag_active() -> bool:
 		if controller != null and controller.is_dragging():
 			return true
 	return false
+
+
+func _is_path_dev_active() -> bool:
+	if get_tree() == null:
+		return false
+	for node: Node in get_tree().get_nodes_in_group("path_dev_mode"):
+		if node != null and node.get("is_active") == true:
+			return true
+	for node2: Node in get_tree().get_nodes_in_group("dev_editor"):
+		if node2 != null and bool(node2.get("is_active")) and not bool(node2.get("is_playtesting")):
+			return true
+	for node3: Node in get_tree().get_nodes_in_group("wave_designer"):
+		if node3 != null and bool(node3.get("is_active")):
+			return true
+	for node4: Node in get_tree().get_nodes_in_group("research_designer"):
+		if node4 != null and bool(node4.get("is_active")):
+			return true
+	return false
+
+
+## Dev Editor playtest: remove all placed nanobots.
+func clear_all_placed() -> void:
+	_clear_selection()
+	var plants: Array = _occupancy.values()
+	_occupancy.clear()
+	for p: Variant in plants:
+		if p != null and is_instance_valid(p):
+			(p as Node).queue_free()
+
+
+## Dev Editor: place nanobot without spending inventory.
+func dev_place_at_cell(cell: Vector2i, plant_id: StringName) -> bool:
+	if grid == null or plant_id == &"":
+		return false
+	var path: String = "res://data/plants/%s.tres" % String(plant_id)
+	# Legacy ids map to files.
+	if plant_id == &"clover" or plant_id == &"thornbush" or plant_id == &"support_nanobot":
+		path = "res://data/plants/%s.tres" % String(plant_id)
+	elif plant_id == &"generator":
+		path = "res://data/plants/clover.tres"
+	elif plant_id == &"attacking":
+		path = "res://data/plants/thornbush.tres"
+	if not ResourceLoader.exists(path):
+		push_warning("PlantManager.dev_place_at_cell: missing %s" % path)
+		return false
+	var data: PlantData = load(path) as PlantData
+	if data == null:
+		return false
+	# Temporarily allow place even if slot rules: caller already chose cell.
+	var was_restrict: bool = grid.restrict_build_to_slots
+	grid.restrict_build_to_slots = false
+	var ok: bool = false
+	if grid.is_in_bounds(cell) and not grid.is_occupied(cell) and not grid.is_path_cell(cell):
+		ok = _place_plant(cell, data)
+	grid.restrict_build_to_slots = was_restrict
+	return ok
 
 
 func get_selected_nanobot() -> Plant:
@@ -210,6 +313,8 @@ func _on_plant_exiting(cell: Vector2i, plant: Plant) -> void:
 			grid.mark_free(cell)
 	if _selected_nanobot == plant:
 		_clear_selection()
+	if _hovered_nanobot == plant:
+		_set_hovered(null)
 
 
 func _get_resources() -> ResourceManager:

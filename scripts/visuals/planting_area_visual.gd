@@ -1,16 +1,18 @@
 ## Soft nanobot deployment-sector presentation over GridManager.
-## Path cells use a distinct infected-channel tint. Does not alter occupancy.
+## Path cells are skipped (PathVisual draws the continuous corridor).
+## Legacy name: PlantingAreaVisual.
 class_name PlantingAreaVisual
 extends Node2D
 
 @export var show_cells: bool = true
 @export var grid_path: GridPathData
-@export var fill_a: Color = Color(0.25, 0.70, 0.80, 0.07)
-@export var fill_b: Color = Color(0.20, 0.55, 0.70, 0.05)
-@export var border_color: Color = Color(0.45, 0.90, 0.95, 0.18)
-@export var path_fill: Color = Color(0.55, 0.18, 0.40, 0.22)
-@export var path_border: Color = Color(0.90, 0.40, 0.60, 0.35)
+@export var fill_a: Color = Color(0.22, 0.58, 0.68, 0.07)
+@export var fill_b: Color = Color(0.16, 0.46, 0.56, 0.05)
+@export var border_color: Color = Color(0.40, 0.82, 0.88, 0.18)
+## Path cells are left empty here — PathVisual owns the continuous corridor.
 @export var border_width: float = 1.0
+@export var cell_inset: float = 3.0
+
 
 var _grid: GridManager
 var _path_cell_set: Dictionary = {}
@@ -68,12 +70,10 @@ func _draw() -> void:
 			var cell := Vector2i(x, y)
 			var top_left: Vector2 = origin + Vector2(float(x) * cell_size.x, float(y) * cell_size.y)
 			var rect := Rect2(top_left, cell_size)
-			var inset := rect.grow(-3.0)
-			var on_path: bool = _path_cell_set.has(cell)
-			if on_path:
-				draw_rect(inset, path_fill, true)
-				draw_rect(inset, path_border, false, border_width)
-			else:
-				var fill: Color = fill_a if ((x + y) % 2 == 0) else fill_b
-				draw_rect(inset, fill, true)
-				draw_rect(inset, border_color, false, border_width)
+			# Skip path cells so per-cell borders never chop the corridor above.
+			if _path_cell_set.has(cell):
+				continue
+			var inset: Rect2 = rect.grow(-cell_inset)
+			var fill: Color = fill_a if ((x + y) % 2 == 0) else fill_b
+			draw_rect(inset, fill, true)
+			draw_rect(inset, border_color, false, border_width)

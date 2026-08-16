@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="ResearchData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="ResearchData" format=3]
 
 [ext_resource type="Script" path="res://scripts/research/research_data.gd" id="1_research"]
+[ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="1_xma34"]
 [ext_resource type="Resource" path="res://data/progression/proteins/damage_protein.tres" id="2_protein"]
 [ext_resource type="Script" path="res://scripts/progression/stat_modifier.gd" id="3_mod"]
 
@@ -15,8 +16,8 @@ script = ExtResource("1_research")
 research_id = &"damage"
 display_name = "Damage"
 description = "Permanent +10% Nanobot Damage. Also enables Damage Protein synthesis."
-costs = Array[ResearchCost]([])
-unlocked_by_default = false
-unlockable = true
 protein = ExtResource("2_protein")
-permanent_modifiers = Array[StatModifier]([SubResource("Mod_damage")])
+permanent_modifiers = Array[ExtResource("3_mod")]([SubResource("Mod_damage")])
+editor_position = Vector2(425.53436, 108.383514)
+prerequisite_ids = Array[StringName]([&"attacking_nanobot"])
+tier = 2

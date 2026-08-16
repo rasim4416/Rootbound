@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ResearchData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="ResearchData" format=3]
 
 [ext_resource type="Script" path="res://scripts/research/research_data.gd" id="1_research"]
 [ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="2_cost"]
@@ -13,7 +13,6 @@ amount = 10
 [sub_resource type="Resource" id="Mod_regen"]
 script = ExtResource("4_mod")
 stat_id = &"health_regen"
-modifier_type = 0
 value = 2.0
 
 [resource]
@@ -21,6 +20,8 @@ script = ExtResource("1_research")
 research_id = &"regeneration"
 display_name = "Regeneration"
 description = "Permanent +2 Nanobot HP/sec regeneration."
-costs = Array[ResearchCost]([SubResource("Cost_o")])
-unlocked_by_default = false
-permanent_modifiers = Array[StatModifier]([SubResource("Mod_regen")])
+costs = Array[ExtResource("2_cost")]([SubResource("Cost_o")])
+permanent_modifiers = Array[ExtResource("4_mod")]([SubResource("Mod_regen")])
+editor_position = Vector2(422.72565, -41.48636)
+prerequisite_ids = Array[StringName]([&"attacking_nanobot"])
+tier = 2

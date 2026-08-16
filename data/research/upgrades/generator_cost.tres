@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ResearchData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="ResearchData" format=3]
 
 [ext_resource type="Script" path="res://scripts/research/research_data.gd" id="1_research"]
 [ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="2_cost"]
@@ -13,7 +13,6 @@ amount = 5
 [sub_resource type="Resource" id="Mod_cost"]
 script = ExtResource("4_mod")
 stat_id = &"generator_shop_cost"
-modifier_type = 0
 value = -5.0
 
 [resource]
@@ -21,7 +20,8 @@ script = ExtResource("1_research")
 research_id = &"generator_cost"
 display_name = "Cost Modifier"
 description = "Generator Nanobot shop cost −5 Bio-Energy."
-costs = Array[ResearchCost]([SubResource("Cost_c")])
-unlocked_by_default = false
-unlockable = true
-permanent_modifiers = Array[StatModifier]([SubResource("Mod_cost")])
+costs = Array[ExtResource("2_cost")]([SubResource("Cost_c")])
+permanent_modifiers = Array[ExtResource("4_mod")]([SubResource("Mod_cost")])
+editor_position = Vector2(121.2316, 83.42996)
+prerequisite_ids = Array[StringName]([&"generator_nanobot"])
+tier = 2

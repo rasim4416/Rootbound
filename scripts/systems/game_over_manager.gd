@@ -59,6 +59,7 @@ func _clear_all_support_buffs() -> void:
 		var indicator := node as AttackRangeIndicator
 		if indicator != null:
 			indicator.set_range_visible(false)
+			indicator.set_hover_visible(false)
 
 
 func _freeze_all_insects() -> void:

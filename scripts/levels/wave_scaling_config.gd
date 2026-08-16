@@ -16,15 +16,15 @@ extends Resource
 @export var core_damage_coeff: float = 0.05
 
 @export_group("Enemy Count")
-## floor(count_base + count_per_wave * wave)
-@export var count_base: float = 3.0
-@export var count_per_wave: float = 1.5
+## round(count_base + count_linear * (w - 1) + count_quad * pow(w - 1, 2))
+@export var count_base: float = 8.0
+@export var count_linear: float = 2.0
+@export var count_quad: float = 0.03
 
 @export_group("Spawn Interval")
-## max(interval_min, interval_base * pow(wave, interval_power))
-@export var interval_base: float = 2.0
-@export var interval_power: float = -0.12
-@export var interval_min: float = 0.35
+## 1.0 / (1.0 + interval_growth * pow(w - 1, interval_power)) — no minimum clamp
+@export var interval_growth: float = 0.05
+@export var interval_power: float = 0.9
 
 @export_group("Timing")
 @export var delay_before_wave: float = 0.0
@@ -47,9 +47,11 @@ func get_wave_core_damage_multiplier(wave: int) -> float:
 
 func get_enemy_count(wave: int) -> int:
 	var w: int = maxi(wave, 1)
-	return maxi(int(floor(count_base + count_per_wave * float(w))), 1)
+	var t: float = float(w - 1)
+	return maxi(int(round(count_base + count_linear * t + count_quad * t * t)), 1)
 
 
 func get_spawn_interval(wave: int) -> float:
 	var w: int = maxi(wave, 1)
-	return maxf(interval_min, interval_base * pow(float(w), interval_power))
+	var t: float = float(w - 1)
+	return 1.0 / (1.0 + interval_growth * pow(t, interval_power))

@@ -44,6 +44,8 @@ func _ready() -> void:
 	if plant_manager != null:
 		plant_manager.nanobot_selected.connect(_on_nanobot_selected)
 		plant_manager.nanobot_deselected.connect(_on_nanobot_deselected)
+		plant_manager.empty_cell_clicked.connect(_on_empty_cell_clicked)
+		plant_manager.nanobot_hovered.connect(_set_attack_range_hover)
 	if organel_manager != null:
 		organel_manager.organel_selected.connect(_on_organel_selected)
 		organel_manager.organel_deselected.connect(_on_organel_deselected)
@@ -85,7 +87,8 @@ func _configure_core(level: LevelData) -> void:
 	var visual := core.get_node_or_null("Visual") as Node2D
 	if visual != null and primary != null and not primary.cells.is_empty():
 		var end_cell: Vector2i = primary.cells[primary.cells.size() - 1]
-		visual.global_position = grid.grid_to_world_center(end_cell)
+		# Slight left bias keeps the body on the path end and clear of right UI.
+		visual.global_position = grid.grid_to_world_center(end_cell) + Vector2(-10.0, 0.0)
 
 
 func _configure_path_visuals(level: LevelData) -> void:
@@ -114,6 +117,13 @@ func _on_nanobot_deselected() -> void:
 	_set_attack_range_selection(null)
 	if _nanobot_info != null:
 		_nanobot_info.hide_panel()
+
+
+func _on_empty_cell_clicked(cell: Vector2i) -> void:
+	if _organel_info != null:
+		_organel_info.hide_panel()
+	if shop_ui != null:
+		shop_ui.open_panel_for_cell(cell)
 
 
 func _on_organel_selected(organel: Organel) -> void:
@@ -152,3 +162,13 @@ func _set_attack_range_selection(selected: Plant) -> void:
 			continue
 		var plant: Plant = indicator.get_plant()
 		indicator.set_range_visible(selected != null and plant == selected)
+
+
+func _set_attack_range_hover(hovered: Plant) -> void:
+	if get_tree() == null:
+		return
+	for node: Node in get_tree().get_nodes_in_group("attack_range_indicators"):
+		var indicator := node as AttackRangeIndicator
+		if indicator == null:
+			continue
+		indicator.set_hover_visible(hovered != null and indicator.get_plant() == hovered)

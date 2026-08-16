@@ -64,7 +64,7 @@ func hit() -> void:
 	_spawn_impact_flash(target.global_position)
 
 	if debug_log_projectiles:
-		var insect_name: String = target.data.display_name if target.data != null else "Insect"
+		var insect_name: String = target.data.display_name if target.data != null else "Pathogen"
 		print("Projectile: hit %s for %.0f" % [insect_name, damage])
 
 	_cleanup()
@@ -119,7 +119,7 @@ func _spawn_impact_flash(at: Vector2) -> void:
 	parent_node.add_child(flash)
 
 	var glow := Polygon2D.new()
-	glow.color = Color(0.85, 1.0, 1.0, 0.9)
+	glow.color = Color(1.0, 0.15, 0.15, 0.9)
 	glow.polygon = PackedVector2Array([
 		Vector2(0, -8), Vector2(6, -2), Vector2(8, 4), Vector2(0, 8),
 		Vector2(-8, 4), Vector2(-6, -2),
@@ -127,7 +127,7 @@ func _spawn_impact_flash(at: Vector2) -> void:
 	flash.add_child(glow)
 
 	var core := Polygon2D.new()
-	core.color = Color(1.0, 1.0, 1.0, 1.0)
+	core.color = Color(1.0, 0.0, 0.0, 1.0)
 	core.polygon = PackedVector2Array([
 		Vector2(0, -3), Vector2(3, 0), Vector2(0, 3), Vector2(-3, 0),
 	])

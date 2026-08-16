@@ -1,17 +1,19 @@
 ## Top-down gameplay unit sprites (separate from Research Lab portraits).
+## plant_id keys clover/thornbush are legacy IDs mapped to generator/attacking art.
 class_name UnitGameplaySprites
 extends RefCounted
 
 const SPRITE_DIR: String = "res://assets/gameplay/units/"
 
+## Legacy plant_id -> sprite stem.
 const PLANT_SPRITE_IDS: Dictionary = {
 	&"clover": &"generator",
 	&"thornbush": &"attacking",
 	&"support_nanobot": &"support",
 }
 
-## Combat art faces up; Godot angle 0 points right — applied on BodyPivot when aiming.
-const COMBAT_SPRITE_FACING_OFFSET: float = PI * 0.5
+## Combat art faces right (barrel tip on +X); Godot angle 0 also points right.
+const COMBAT_SPRITE_FACING_OFFSET: float = 0.0
 
 static var _cache: Dictionary = {}
 
@@ -37,9 +39,9 @@ static func get_plant_platform_style(plant_id: StringName) -> Dictionary:
 	match plant_id:
 		&"thornbush":
 			return {
-				"fill": Color(0.10, 0.14, 0.22, 0.94),
-				"inner": Color(0.14, 0.20, 0.32, 0.72),
-				"border": Color(0.45, 0.72, 0.95, 0.88),
+				"fill": Color(0.12, 0.08, 0.10, 0.94),
+				"inner": Color(0.22, 0.10, 0.12, 0.72),
+				"border": Color(0.95, 0.28, 0.32, 0.90),
 			}
 		&"support_nanobot":
 			return {
@@ -48,10 +50,11 @@ static func get_plant_platform_style(plant_id: StringName) -> Dictionary:
 				"border": Color(0.35, 0.88, 0.95, 0.85),
 			}
 		_:
+			# Generator / default — neon green energy theme
 			return {
-				"fill": Color(0.08, 0.15, 0.18, 0.94),
-				"inner": Color(0.10, 0.22, 0.26, 0.68),
-				"border": Color(0.30, 0.82, 0.78, 0.85),
+				"fill": Color(0.08, 0.14, 0.10, 0.94),
+				"inner": Color(0.10, 0.22, 0.12, 0.68),
+				"border": Color(0.35, 0.95, 0.40, 0.90),
 			}
 
 

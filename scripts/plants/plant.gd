@@ -19,6 +19,8 @@ signal xp_changed(current_xp: float, xp_to_next: float, level: int)
 signal level_up_available(nanobot: Plant)
 signal leveled_up(new_level: int, upgrade: NanobotUpgradeData)
 signal proteins_changed
+## mode is a TargetingModes.Mode value.
+signal target_mode_changed(mode: int)
 
 @export var data: PlantData:
 	set(value):
@@ -45,6 +47,7 @@ var _protein_names: Dictionary = {} ## protein_id → display_name
 var _protein_token: int = 0
 var _aim_target_world: Vector2 = Vector2.ZERO
 var _has_aim_target: bool = false
+var _target_mode: int = TargetingModes.Mode.NEAREST
 
 static var _next_debug_id: int = 1
 var debug_id: int = 0
@@ -143,6 +146,7 @@ func initialize(plant_data: PlantData) -> void:
 	_protein_names.clear()
 	_protein_token = 0
 	_has_aim_target = false
+	_target_mode = TargetingModes.Mode.NEAREST
 	if progression_data == null:
 		progression_data = _DEFAULT_PROGRESSION
 	_sync_from_data()
@@ -261,6 +265,24 @@ func aim_at(world_position: Vector2) -> void:
 
 func clear_aim() -> void:
 	_has_aim_target = false
+
+
+## Falls back to NEAREST while the Targeting research is locked.
+func get_target_mode() -> int:
+	if not TargetingModes.is_available(_target_mode):
+		return TargetingModes.Mode.NEAREST
+	return _target_mode
+
+
+## Returns false when the mode is still locked behind the Targeting research.
+func set_target_mode(mode: int) -> bool:
+	if not TargetingModes.is_available(mode):
+		return false
+	if _target_mode == mode:
+		return true
+	_target_mode = mode
+	target_mode_changed.emit(mode)
+	return true
 
 
 func add_xp(amount: float) -> void:

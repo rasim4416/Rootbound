@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ResearchData" format=3]
+
+[ext_resource type="Script" path="res://scripts/research/research_cost.gd" id="1_nqyf7"]
+[ext_resource type="Script" path="res://scripts/progression/stat_modifier.gd" id="2_dmwkl"]
+[ext_resource type="Resource" path="res://data/research/elements/hydrogen.tres" id="2_jjg4f"]
+[ext_resource type="Script" path="res://scripts/research/research_data.gd" id="3_dpuhn"]
+[ext_resource type="Resource" path="res://data/research/elements/oxygen.tres" id="3_ygpyp"]
+[ext_resource type="Resource" path="res://data/research/elements/carbon.tres" id="4_c2b2u"]
+
+[sub_resource type="Resource" id="Resource_8b3rm"]
+script = ExtResource("1_nqyf7")
+element = ExtResource("2_jjg4f")
+amount = 100
+
+[sub_resource type="Resource" id="Resource_m5ah4"]
+script = ExtResource("1_nqyf7")
+element = ExtResource("3_ygpyp")
+amount = 50
+
+[sub_resource type="Resource" id="Resource_flbfk"]
+script = ExtResource("1_nqyf7")
+element = ExtResource("4_c2b2u")
+amount = 40
+
+[resource]
+script = ExtResource("3_dpuhn")
+research_id = &"Targeting"
+display_name = "Targeting"
+description = "Allow your bots to target First, Last, Strongest and Weakest enemies"
+costs = Array[ExtResource("1_nqyf7")]([SubResource("Resource_8b3rm"), SubResource("Resource_m5ah4"), SubResource("Resource_flbfk")])
+editor_position = Vector2(-367.3932, 392.7422)
+prerequisite_ids = Array[StringName]([&"center"])

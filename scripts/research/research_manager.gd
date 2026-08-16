@@ -53,7 +53,21 @@ func can_unlock(research_id: StringName) -> bool:
 		return false
 	if not data.unlockable:
 		return false
+	if not prerequisites_met(research_id):
+		return false
 	return can_afford_costs(data.costs)
+
+
+func prerequisites_met(research_id: StringName) -> bool:
+	var data: ResearchData = get_research(research_id)
+	if data == null:
+		return false
+	for parent_id: StringName in data.prerequisite_ids:
+		if parent_id == &"":
+			continue
+		if not is_unlocked(parent_id):
+			return false
+	return true
 
 
 func can_afford_costs(costs: Array[ResearchCost]) -> bool:
@@ -69,14 +83,10 @@ func can_afford_costs(costs: Array[ResearchCost]) -> bool:
 
 
 func unlock(research_id: StringName) -> bool:
-	if is_unlocked(research_id):
+	if not can_unlock(research_id):
 		return false
 	var data: ResearchData = get_research(research_id)
 	if data == null:
-		return false
-	if not data.unlockable:
-		return false
-	if not can_afford_costs(data.costs):
 		return false
 
 	var inventory: ElementInventory = _get_inventory()
@@ -169,6 +179,18 @@ func _sync_permanent_effects() -> void:
 				StringName("research_%s_%s" % [String(data.research_id), String(mod.stat_id)])
 			)
 			permanent.add_modifier(applied)
+
+
+## Reloads every ResearchData .tres under data/research (recursive).
+func reload_catalog_from_disk() -> void:
+	_load_catalog_from_disk()
+	_apply_defaults()
+	_sync_permanent_effects()
+
+
+## Designer: replace in-memory catalog (same ResearchData instances the editor holds).
+func replace_catalog(entries: Array[ResearchData]) -> void:
+	research_catalog = entries
 
 
 ## Loads every ResearchData .tres under data/research (recursive).
