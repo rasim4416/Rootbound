@@ -3,19 +3,10 @@
 ## Scans InsectLayer for living Insect nodes. Combat systems (future) call into
 ## this helper — plants and insects stay unaware of each other.
 ##
-## Selection modes FIRST / STRONGEST / WEAKEST / PRIORITY are reserved for later;
-## only NEAREST is implemented now.
+## Modes live in [TargetingModes]; First / Last / Weakest / Strongest are gated
+## behind the Targeting research (checked by the caller, e.g. Plant).
 class_name TargetingSystem
 extends Node
-
-## Future expansion — only NEAREST is used today.
-enum SelectMode {
-	NEAREST,
-	FIRST,
-	STRONGEST,
-	WEAKEST,
-	PRIORITY,
-}
 
 @export var insect_layer: Node2D
 
@@ -90,15 +81,14 @@ func find_nearest_target(
 	range_radius: float,
 	filter_fn: Callable = Callable()
 ) -> Insect:
-	return select_target(origin, range_radius, SelectMode.NEAREST, filter_fn)
+	return select_target(origin, range_radius, TargetingModes.Mode.NEAREST, filter_fn)
 
 
-## Selects a target using the given mode. Non-NEAREST modes fall back to nearest
-## until they are implemented.
+## Selects a target using a TargetingModes.Mode. Ties break toward the nearest.
 func select_target(
 	origin: Vector2,
 	range_radius: float,
-	mode: SelectMode = SelectMode.NEAREST,
+	mode: int = TargetingModes.Mode.NEAREST,
 	filter_fn: Callable = Callable()
 ) -> Insect:
 	var candidates: Array[Insect] = get_targets_in_range(origin, range_radius, filter_fn)
@@ -106,13 +96,24 @@ func select_target(
 		return null
 
 	match mode:
-		SelectMode.NEAREST:
-			return _pick_nearest(origin, candidates)
-		SelectMode.FIRST, SelectMode.STRONGEST, SelectMode.WEAKEST, SelectMode.PRIORITY:
-			# Reserved for future targeting rules.
-			return _pick_nearest(origin, candidates)
+		TargetingModes.Mode.FIRST:
+			return _pick_best(origin, candidates, _score_path_progress, true)
+		TargetingModes.Mode.LAST:
+			return _pick_best(origin, candidates, _score_path_progress, false)
+		TargetingModes.Mode.STRONGEST:
+			return _pick_best(origin, candidates, _score_health, true)
+		TargetingModes.Mode.WEAKEST:
+			return _pick_best(origin, candidates, _score_health, false)
 		_:
 			return _pick_nearest(origin, candidates)
+
+
+func _score_path_progress(insect: Insect) -> float:
+	return insect.get_path_progress()
+
+
+func _score_health(insect: Insect) -> float:
+	return insect.current_health
 
 
 func _pick_nearest(origin: Vector2, candidates: Array[Insect]) -> Insect:
@@ -124,6 +125,34 @@ func _pick_nearest(origin: Vector2, candidates: Array[Insect]) -> Insect:
 		if dist_sq < best_dist_sq:
 			best_dist_sq = dist_sq
 			best = insect
+
+	return best
+
+
+## Highest (or lowest) score_fn value; equal scores fall back to the nearest.
+func _pick_best(
+	origin: Vector2,
+	candidates: Array[Insect],
+	score_fn: Callable,
+	prefer_highest: bool
+) -> Insect:
+	var best: Insect = null
+	var best_score: float = 0.0
+	var best_dist_sq: float = INF
+
+	for insect: Insect in candidates:
+		var score: float = float(score_fn.call(insect))
+		var dist_sq: float = origin.distance_squared_to(insect.global_position)
+		if best == null:
+			best = insect
+			best_score = score
+			best_dist_sq = dist_sq
+			continue
+		var better: bool = (score > best_score) if prefer_highest else (score < best_score)
+		if better or (is_equal_approx(score, best_score) and dist_sq < best_dist_sq):
+			best = insect
+			best_score = score
+			best_dist_sq = dist_sq
 
 	return best
 

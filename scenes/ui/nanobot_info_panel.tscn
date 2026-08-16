@@ -4,51 +4,70 @@
 
 [node name="NanobotInfoPanel" type="Control"]
 layout_mode = 3
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = -300.0
-offset_right = 300.0
-offset_bottom = -16.0
-grow_vertical = 0
-mouse_filter = 2
-script = ExtResource("1_info")
-
-[node name="Panel" type="PanelContainer" parent="."]
-layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("1_info")
+
+[node name="Panel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -16.0
+offset_right = 316.0
+offset_bottom = -16.0
+grow_horizontal = 1
+grow_vertical = 0
 
 [node name="Margin" type="MarginContainer" parent="Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
 
 [node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 8
 
-[node name="NameLabel" type="Label" parent="Panel/Margin/VBox"]
+[node name="HeaderRow" type="HBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HeaderText" type="VBoxContainer" parent="Panel/Margin/VBox/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="NameLabel" type="Label" parent="Panel/Margin/VBox/HeaderRow/HeaderText"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 17
 text = "NANOBOT"
 
-[node name="LevelLabel" type="Label" parent="Panel/Margin/VBox"]
+[node name="RoleLabel" type="Label" parent="Panel/Margin/VBox/HeaderRow/HeaderText"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Level 1"
+theme_override_font_sizes/font_size = 10
+text = "COMBAT NANOBOT"
 
-[node name="XpLabel" type="Label" parent="Panel/Margin/VBox"]
+[node name="LevelBadge" type="PanelContainer" parent="Panel/Margin/VBox/HeaderRow"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "XP 0 / 100"
+size_flags_vertical = 4
+
+[node name="LevelLabel" type="Label" parent="Panel/Margin/VBox/HeaderRow/LevelBadge"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "LV 1"
 
 [node name="XpBar" type="ProgressBar" parent="Panel/Margin/VBox"]
 unique_name_in_owner = true
@@ -57,13 +76,73 @@ layout_mode = 2
 max_value = 100.0
 show_percentage = false
 
-[node name="StatsLabel" type="Label" parent="Panel/Margin/VBox"]
+[node name="XpLabel" type="Label" parent="Panel/Margin/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Damage: 0"
+theme_override_font_sizes/font_size = 11
+text = "XP 0 / 100"
+
+[node name="StatsSection" type="VBoxContainer" parent="Panel/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="StatsTitle" type="Label" parent="Panel/Margin/VBox/StatsSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "STATS"
+
+[node name="StatsGrid" type="GridContainer" parent="Panel/Margin/VBox/StatsSection"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 3
+columns = 2
+
+[node name="TargetingSection" type="VBoxContainer" parent="Panel/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="TargetingTitle" type="Label" parent="Panel/Margin/VBox/TargetingSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "TARGETING"
+
+[node name="TargetingGrid" type="GridContainer" parent="Panel/Margin/VBox/TargetingSection"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 3
+
+[node name="TargetingHint" type="Label" parent="Panel/Margin/VBox/TargetingSection"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = ""
+autowrap_mode = 2
+
+[node name="ProteinsSection" type="VBoxContainer" parent="Panel/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ProteinsTitle" type="Label" parent="Panel/Margin/VBox/ProteinsSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "PROTEINS"
+
+[node name="ProteinsLabel" type="Label" parent="Panel/Margin/VBox/ProteinsSection"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "None"
+autowrap_mode = 2
 
 [node name="UpgradeButton" type="Button" parent="Panel/Margin/VBox"]
 unique_name_in_owner = true
 visible = false
+custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
-text = "Choose upgrade"
+text = "CHOOSE UPGRADE"

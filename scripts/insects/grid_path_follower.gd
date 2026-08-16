@@ -63,6 +63,18 @@ func start(path_data: GridPathData, grid: GridManager, speed: float) -> void:
 	set_process(true)
 
 
+## 0..1 distance travelled along the whole path (1 = arrived at the Nucleus end).
+func get_path_progress() -> float:
+	if _completed:
+		return 1.0
+	if _path_data == null:
+		return 0.0
+	var segments: int = _path_data.get_cell_count() - 1
+	if segments <= 0:
+		return 1.0
+	return clampf((float(current_cell_index) + progress) / float(segments), 0.0, 1.0)
+
+
 ## Halts movement without emitting path_completed.
 func stop() -> void:
 	is_moving = false

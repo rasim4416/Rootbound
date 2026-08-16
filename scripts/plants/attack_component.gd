@@ -44,9 +44,10 @@ func _process(delta: float) -> void:
 	if targeting_system == null:
 		return
 
-	var target: Insect = targeting_system.find_nearest_target(
+	var target: Insect = targeting_system.select_target(
 		_plant.global_position,
-		attack_range
+		attack_range,
+		_plant.get_target_mode()
 	)
 	if target == null or not target.is_alive:
 		_plant.clear_aim()

@@ -27,6 +27,9 @@ var _level_wave_hp: float = 1.0
 var _level_wave_speed: float = 1.0
 var _level_wave_core_damage: float = 1.0
 
+## Cached on first targeting query (followers may be added after spawn).
+var _path_follower: GridPathFollower = null
+
 @onready var _visual: Node2D = $Visual
 
 
@@ -84,6 +87,20 @@ func get_core_damage() -> float:
 	if data == null:
 		return 0.0
 	return maxf(get_effective_stat(StatIds.ATTACK_DAMAGE, data.attack_damage), 0.0)
+
+
+## 0..1 progress along this pathogen's path. Used by First / Last targeting.
+func get_path_progress() -> float:
+	if _path_follower == null or not is_instance_valid(_path_follower):
+		_path_follower = null
+		for child: Node in get_children():
+			var follower := child as GridPathFollower
+			if follower != null:
+				_path_follower = follower
+				break
+	if _path_follower == null:
+		return 0.0
+	return _path_follower.get_path_progress()
 
 
 ## Reduces health. Optional attacker is attributed only if this hit is lethal.
